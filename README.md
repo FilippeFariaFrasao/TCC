@@ -429,16 +429,17 @@ USING (true) WITH CHECK (true);
 ## ✨ Funcionalidades
 
 ### **🏠 Dashboard**
-- **Estatísticas em tempo real**: Agendamentos confirmados hoje, total de clientes
-- **Cards informativos**: Visual clean com ícones e números destacados
+- **6 métricas detalhadas**: Atendimentos hoje, concluídos, receita diária/mensal, próximos agendamentos, total clientes
+- **Cards informativos**: Visual clean com ícones e números destacados, descrições contextuais
+- **Receita em tempo real**: Cálculo automático baseado em agendamentos concluídos
+- **Layout responsivo otimizado**: 1-6 colunas conforme tamanho da tela
 - **Fallback strategy**: Dados sempre carregam, mesmo com problemas de auth
-- **Responsivo**: Layout adaptado para mobile e desktop
 
 ### **📅 Gestão de Agendamentos**
 - ✅ **CRUD Completo**: Criar, visualizar, editar e excluir agendamentos
 - ✅ **Formulário inteligente**: Auto-completa horário fim e preço baseado no serviço
 - ✅ **Dropdowns dinâmicos**: Carrega clientes e serviços ativos automaticamente
-- ✅ **Status personalizáveis**: Pendente, confirmado, cancelado, finalizado
+- ✅ **Status personalizáveis**: Pendente, confirmado, cancelado, finalizado (corrigido problemas de inconsistência)
 - ✅ **Correção de timezone**: Datas exibidas corretamente (formato DD/MM/YYYY)
 - ✅ **Validação robusta**: Formulários com validação em tempo real
 - ✅ **Roteamento RESTful**: `/agendamentos/novo`, `/agendamentos/[id]`, `/agendamentos/[id]/editar`
@@ -1032,6 +1033,24 @@ SENTRY_DSN=https://xxxxx@sentry.io/xxxxx
 
 ## 🚀 Atualizações Recentes
 
+### **v2.2.0 - Dashboard Avançado e Correções** 
+*Lançado em 23 de Agosto de 2025*
+
+#### **📊 Principais Novidades**
+- **Dashboard Expandido**: 6 métricas detalhadas (atendimentos, receita diária/mensal, contadores)
+- **Correção Crítica**: Status "Finalizado" agora funciona perfeitamente em agendamentos
+- **Padronização de Status**: Resolução de inconsistência entre 'finalizado' e 'concluido'
+- **Queries Corrigidas**: Uso correto do campo 'data_agendamento' em todas as consultas
+- **Layout Responsivo**: Otimizado para 1-6 colunas conforme tamanho da tela
+
+#### **🔧 Correções Técnicas**
+1. **Status de Agendamentos**: Padronização para 'concluido' em todo o sistema
+2. **Dashboard Metrics**: Correção de campos nas queries (data → data_agendamento)
+3. **Sidebar Centralizada**: Alinhamento perfeito quando colapsada
+4. **Receita em Tempo Real**: Cálculo automático baseado em agendamentos concluídos
+
+---
+
 ### **v2.1.0 - Interface Moderna e Responsiva** 
 *Lançado em 22 de Agosto de 2025*
 
@@ -1174,4 +1193,4 @@ Para dúvidas ou problemas:
 
 **💈 Desenvolvido com ❤️ para modernizar a gestão da Bárbaros Barbearia**
 
-*Sistema v2.1.0 - Interface Moderna e Responsiva*
+*Sistema v2.2.0 - Dashboard Avançado e Correções*

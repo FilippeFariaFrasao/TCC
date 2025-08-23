@@ -60,17 +60,19 @@ export function Sidebar() {
         {menuItems.map((item) => {
           const Icon = item.icon
           const isActive = pathname === item.href
-          
+
           return (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 px-3 py-2 rounded-lg mb-1 transition-colors relative group",
+                "flex items-center rounded-lg mb-1 transition-colors relative group",
                 isActive
                   ? "bg-primary text-primary-foreground"
                   : "hover:bg-accent hover:text-accent-foreground",
-                isCollapsed && "justify-center"
+                isCollapsed
+                  ? "justify-center p-2 mx-0"
+                  : "gap-3 px-3 py-2"
               )}
             >
               <Icon className="h-5 w-5 flex-shrink-0" />
@@ -80,7 +82,7 @@ export function Sidebar() {
               )}>
                 {item.label}
               </span>
-              
+
               {/* Tooltip para sidebar colapsada */}
               {isCollapsed && (
                 <div className="absolute left-full ml-3 px-3 py-2 bg-popover text-popover-foreground text-sm rounded-md shadow-lg border opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 whitespace-nowrap">
@@ -91,7 +93,7 @@ export function Sidebar() {
           )
         })}
       </nav>
-      
+
       {/* Rodapé com versão */}
       <div className={cn(
         "mt-auto p-4 border-t",

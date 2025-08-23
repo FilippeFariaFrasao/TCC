@@ -15,6 +15,23 @@ export interface VersionInfo {
 
 export const VERSION_HISTORY: VersionInfo[] = [
   {
+    version: '2.2.0',
+    name: 'Dashboard Avançado e Correções',
+    releaseDate: '2025-08-23',
+    type: 'minor',
+    description: 'Dashboard expandido com métricas detalhadas, correção de bugs críticos e melhorias na sidebar',
+    features: [
+      'Dashboard expandido com 6 métricas detalhadas (atendimentos, receita, etc.)',
+      'Correção crítica: status "Finalizado" agora funciona corretamente',
+      'Padronização de status nos agendamentos (concluido vs finalizado)',
+      'Correção de queries do dashboard (campo data_agendamento)',
+      'Sidebar colapsada com alinhamento centralizado perfeito',
+      'Métricas de receita diária e mensal em tempo real',
+      'Contadores de atendimentos concluídos e próximos agendamentos',
+      'Layout responsivo otimizado (1-6 colunas conforme tela)'
+    ]
+  },
+  {
     version: '2.1.0',
     name: 'Interface Moderna e Responsiva',
     releaseDate: '2025-08-22',

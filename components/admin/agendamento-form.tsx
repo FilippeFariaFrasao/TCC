@@ -25,7 +25,7 @@ const statusOptions = [
   { value: 'pendente', label: 'Pendente' },
   { value: 'confirmado', label: 'Confirmado' },
   { value: 'cancelado', label: 'Cancelado' },
-  { value: 'finalizado', label: 'Finalizado' },
+  { value: 'concluido', label: 'Finalizado' },
 ]
 
 export function AgendamentoForm({ agendamento, isEditing = false }: AgendamentoFormProps) {
@@ -107,7 +107,7 @@ export function AgendamentoForm({ agendamento, isEditing = false }: AgendamentoF
             hora_fim: formData.hora_fim,
             cliente_id: formData.cliente_id || null,
             servico_id: formData.servico_id || null,
-            status: formData.status || null,
+            status: formData.status,
             valor_total: formData.valor_total || null,
             observacoes: formData.observacoes || null,
             updated_at: new Date().toISOString(),
@@ -124,7 +124,7 @@ export function AgendamentoForm({ agendamento, isEditing = false }: AgendamentoF
             hora_fim: formData.hora_fim,
             cliente_id: formData.cliente_id || null,
             servico_id: formData.servico_id || null,
-            status: formData.status || null,
+            status: formData.status,
             valor_total: formData.valor_total || null,
             observacoes: formData.observacoes || null,
           })
