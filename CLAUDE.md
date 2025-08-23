@@ -70,6 +70,26 @@ The Supabase database includes these main tables:
 - Client-side Supabase client in `lib/supabase/client.ts`
 - Server-side client in `lib/supabase/server.ts`
 
+### Versioning System
+This project uses **Semantic Versioning (SemVer)** for version control:
+
+- **MAJOR** (X.0.0): Breaking changes that may break existing functionality
+- **MINOR** (X.Y.0): New features that are backward compatible
+- **PATCH** (X.Y.Z): Bug fixes only, no new features
+
+**Version Management Files:**
+- `lib/version-history.ts`: Complete version history with features and changelog
+- `package.json`: Current version number
+- `README.md`: Contains detailed versioning documentation
+
+**Current Version: v2.2.0** (Dashboard Avançado e Correções)
+
+**When updating versions:**
+1. Add new version entry to the TOP of `VERSION_HISTORY` array in `lib/version-history.ts`
+2. Update version number in `package.json`
+3. Update README.md with new features and changelog
+4. Follow semantic versioning rules for version type classification
+
 ### Current Issues to Address
 
 **Critical:**

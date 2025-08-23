@@ -892,7 +892,7 @@ barbearia-admin/
 
 ## 🚀 Deploy
 
-### **Vercel (Recomendado)**
+### **Vercel**
 
 A **Vercel** é a plataforma ideal para este projeto:
 
@@ -942,70 +942,6 @@ git push origin main
 
 # Pull Requests = preview deploy
 # URL de preview gerada automaticamente
-```
-
-### **Outras Plataformas**
-
-#### **Netlify**
-```bash
-# Build settings
-Build command: npm run build
-Publish directory: .next
-
-# Environment variables (mesmo da Vercel)
-NEXT_PUBLIC_SUPABASE_URL=...
-NEXT_PUBLIC_SUPABASE_ANON_KEY=...
-SUPABASE_SERVICE_ROLE_KEY=...
-```
-
-#### **Railway**
-```bash
-# railway.json
-{
-  "build": {
-    "builder": "NIXPACKS"  
-  },
-  "deploy": {
-    "startCommand": "npm start",
-    "restartPolicyType": "ON_FAILURE"
-  }
-}
-```
-
-#### **Docker (Self-hosted)**
-```dockerfile
-# Dockerfile
-FROM node:18-alpine
-
-WORKDIR /app
-
-# Copy package files
-COPY package*.json ./
-RUN npm ci --only=production
-
-# Copy source
-COPY . .
-RUN npm run build
-
-# Expose port  
-EXPOSE 3000
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:3000/api/health || exit 1
-
-# Start application
-CMD ["npm", "start"]
-```
-
-```bash
-# Build & Run
-docker build -t barbearia-admin .
-docker run -p 3000:3000 \
-  -e NEXT_PUBLIC_SUPABASE_URL=... \
-  -e NEXT_PUBLIC_SUPABASE_ANON_KEY=... \
-  -e SUPABASE_SERVICE_ROLE_KEY=... \
-  barbearia-admin
 ```
 
 ### **🔧 Configurações de Produção**
