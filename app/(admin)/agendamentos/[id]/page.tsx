@@ -55,7 +55,7 @@ export default async function AgendamentoPage({ params }: AgendamentoPageProps) 
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4 text-gray-500" />
               <span className="font-medium">Data:</span>
-              <span>{new Date(agendamento.data_agendamento).toLocaleDateString('pt-BR')}</span>
+              <span>{agendamento.data_agendamento.split('-').reverse().join('/')}</span>
             </div>
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-gray-500" />

@@ -4,8 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createServiceClient } from '@/lib/supabase/service'
 import { HorariosClientActions } from '@/components/admin/horarios-client-actions'
 import { HorarioActions } from '@/components/admin/horario-actions'
-import { Clock, Calendar, Plus } from 'lucide-react'
-import Link from 'next/link'
+import { Clock, Calendar } from 'lucide-react'
 
 const diasSemana = [
   'Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'
@@ -32,12 +31,6 @@ export default async function HorariosPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Horários de Funcionamento</h1>
-        <Link href="/horarios/novo">
-          <Button>
-            <Plus className="h-4 w-4 mr-2" />
-            Novo Horário
-          </Button>
-        </Link>
       </div>
 
       <div className="grid gap-4">
@@ -51,7 +44,7 @@ export default async function HorariosPage() {
                     {diasSemana[horario.dia_semana] || `Dia ${horario.dia_semana}`}
                     {!horario.ativo && <span className="text-red-500 text-sm">(Inativo)</span>}
                   </CardTitle>
-                  <HorarioActions horarioId={horario.id} />
+                  <HorarioActions horarioId={horario.id} isActive={horario.ativo} />
                 </div>
               </CardHeader>
               <CardContent>
@@ -77,12 +70,6 @@ export default async function HorariosPage() {
             <CardContent className="text-center py-8">
               <Clock className="h-12 w-12 text-gray-300 mx-auto mb-4" />
               <p className="text-gray-500 mb-4">Nenhum horário de funcionamento configurado</p>
-              <Link href="/horarios/novo">
-                <Button>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Configurar primeiro horário
-                </Button>
-              </Link>
             </CardContent>
           </Card>
         )}

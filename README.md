@@ -1,18 +1,21 @@
 # 💈 Sistema de Administração - Barbearia
 
-Sistema completo de gerenciamento para barbearias desenvolvido com **Next.js 15** e **Supabase**. Permite controle total de agendamentos, clientes, serviços, horários de funcionamento e bloqueios de agenda.
+Sistema completo de gerenciamento para barbearias desenvolvido com **Next.js 15** e **Supabase**. Interface moderna com tema dark/light, sidebar recolhível e controle total de agendamentos, clientes, serviços, horários de funcionamento e bloqueios de agenda.
 
 ## 📋 Índice
 
 - [Visão Geral](#visão-geral)
+- [Por que Supabase?](#por-que-supabase)
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
 - [Arquitetura do Sistema](#arquitetura-do-sistema)
 - [Configuração do Projeto](#configuração-do-projeto)
-- [Banco de Dados](#banco-de-dados)
+- [Backend - Supabase](#backend---supabase)
 - [Funcionalidades](#funcionalidades)
+- [Sistema de Versionamento](#sistema-de-versionamento)
 - [Como Executar](#como-executar)
-- [Estrutura de Pastas](#estrutura-de-pastas)
+- [Estrutura Detalhada do Projeto](#estrutura-detalhada-do-projeto)
 - [Deploy](#deploy)
+- [Atualizações Recentes](#atualizações-recentes)
 
 ---
 
@@ -20,107 +23,164 @@ Sistema completo de gerenciamento para barbearias desenvolvido com **Next.js 15*
 
 Este é um **sistema administrativo completo** para barbearias que oferece:
 
-- ✅ **Dashboard** com estatísticas e resumos
-- ✅ **Gestão completa de agendamentos** (CRUD completo com formulários inteligentes)
-- ✅ **Gestão completa de clientes** (CRUD completo com sistema ativo/inativo)
-- ✅ **Gestão completa de serviços** (CRUD completo com sistema ativo/inativo)
-- ✅ **Configuração de horários de funcionamento** (CRUD completo)
-- ✅ **Sistema de bloqueios de agenda** (CRUD completo - feriados, manutenção, etc.)
-- ✅ **Sistema inteligente de ativação/inativação** (preserva dados sem exclusão definitiva)
-- ✅ **Interface moderna e responsiva** com feedback visual completo
+- ✅ **Dashboard** com estatísticas e resumos em tempo real
+- ✅ **Gestão completa de agendamentos** com correção de timezone
+- ✅ **Gestão de clientes e serviços** com sistema ativo/inativo
+- ✅ **Configuração de horários** otimizada e simplificada
+- ✅ **Sistema de bloqueios** para feriados e manutenção
+- ✅ **Interface moderna** com sidebar recolhível e tema dark/light
+- ✅ **Sistema de versionamento** com histórico completo
 - ✅ **Autenticação segura** via Supabase Auth
+- ✅ **Responsivo** - funciona perfeitamente em mobile e desktop
 - ❌ **Relatórios** (planejado - não implementado)
 
 ### 🎯 Público-Alvo
-Donos de barbearias, gerentes e funcionários que precisam de uma ferramenta moderna e eficiente para gerenciar o negócio.
+Donos de barbearias, gerentes e funcionários que precisam de uma ferramenta moderna, rápida e eficiente para gerenciar o negócio.
+
+---
+
+## 🤔 Por que Supabase?
+
+### **Supabase como Backend-as-a-Service (BaaS)**
+
+O **Supabase** foi escolhido como nossa solução de backend pelos seguintes motivos:
+
+#### **✅ Vantagens Técnicas:**
+- **PostgreSQL Real**: Banco relacional robusto, não NoSQL limitado
+- **Tipagem Automática**: Gera tipos TypeScript automaticamente
+- **Real-time**: Subscriptions em tempo real sem configuração complexa  
+- **RLS (Row Level Security)**: Segurança a nível de linha built-in
+- **API REST Auto-gerada**: CRUD automático baseado no schema
+- **Auth Completo**: Sistema de autenticação robusto incluso
+
+#### **⚡ Benefícios para o Projeto:**
+- **Desenvolvimento Rápido**: Sem necessidade de desenvolver backend do zero
+- **Escalabilidade**: Infraestrutura gerenciada automaticamente
+- **Custo-Benefício**: Plano gratuito generoso para MVPs
+- **Developer Experience**: Dashboard intuitivo e ótima documentação
+- **Migrações Fáceis**: Sistema de versionamento de schema integrado
+
+#### **🏗️ Como Funciona no Projeto:**
+1. **Schema SQL**: Definimos tabelas e relacionamentos em SQL puro
+2. **Políticas RLS**: Controlamos acesso a dados com políticas de segurança
+3. **Tipos TypeScript**: Gerados automaticamente a partir do schema
+4. **Multiple Clients**: Client browser, server e service role para diferentes cenários
+5. **Fallback Strategy**: Se RLS falhar, fallback para service role automaticamente
+
+#### **🆚 Alternativas Consideradas:**
+- **Firebase**: Limitado para dados relacionais complexos
+- **PlanetScale**: Ótimo, mas mais caro para hobby projects  
+- **Prisma + PostgreSQL**: Require infraestrutura própria
+- **MongoDB**: Não ideal para dados estruturados como agendamentos
+
+**Resultado**: Supabase oferece o melhor equilíbrio entre funcionalidades, facilidade de uso e custo para este tipo de aplicação.
 
 ---
 
 ## 🚀 Tecnologias Utilizadas
 
 ### **Frontend & Framework**
-- **[Next.js 15](https://nextjs.org/)** - Framework React com App Router
+- **[Next.js 15](https://nextjs.org/)** - Framework React com App Router e Server Components
 - **[React 19](https://reactjs.org/)** - Biblioteca para interfaces de usuário
-- **[TypeScript](https://www.typescriptlang.org/)** - Superset JavaScript com tipagem estática
-- **[Tailwind CSS](https://tailwindcss.com/)** - Framework CSS utilitário
+- **[TypeScript](https://www.typescriptlang.org/)** - Superset JavaScript com tipagem estática forte
+- **[Tailwind CSS v4](https://tailwindcss.com/)** - Framework CSS utilitário com CSS Variables
 
 ### **Backend & Database**
-- **[Supabase](https://supabase.com/)** - Backend-as-a-Service (BaaS)
-  - **PostgreSQL** - Banco de dados relacional
-  - **Supabase Auth** - Sistema de autenticação
+- **[Supabase](https://supabase.com/)** - Backend-as-a-Service (BaaS) completo
+  - **PostgreSQL 15** - Banco de dados relacional robusto
+  - **Supabase Auth** - Sistema de autenticação completo
   - **Row Level Security (RLS)** - Segurança a nível de linha
   - **Real-time subscriptions** - Atualizações em tempo real
+  - **PostgREST** - API REST auto-gerada
+  - **Supabase Edge Functions** - Serverless functions (futuro)
 
 ### **UI Components & Styling**
-- **[shadcn/ui](https://ui.shadcn.com/)** - Componentes React reutilizáveis
-- **[Radix UI](https://www.radix-ui.com/)** - Primitivos de UI acessíveis
-- **[Lucide React](https://lucide.dev/)** - Ícones SVG
-- **[Tailwind Merge](https://github.com/dcastil/tailwind-merge)** - Utilitário para merge de classes CSS
+- **[shadcn/ui](https://ui.shadcn.com/)** - Componentes React reutilizáveis de alta qualidade
+- **[Radix UI](https://www.radix-ui.com/)** - Primitivos de UI acessíveis e composáveis
+- **[Lucide React](https://lucide.dev/)** - Biblioteca de ícones SVG moderna
+- **[class-variance-authority](https://cva.style/)** - Criação de variantes de componentes
+- **[tailwind-merge](https://github.com/dcastil/tailwind-merge)** - Merge inteligente de classes CSS
+- **[clsx](https://github.com/lukeed/clsx)** - Utilitário para classes condicionais
 
 ### **Forms & Validation**
-- **[React Hook Form](https://react-hook-form.com/)** - Gerenciamento de formulários
+- **[React Hook Form](https://react-hook-form.com/)** - Gerenciamento performático de formulários
 - **[Zod](https://zod.dev/)** - Validação de schema TypeScript-first
-- **[@hookform/resolvers](https://github.com/react-hook-form/resolvers)** - Resolvers para validação
+- **[@hookform/resolvers](https://github.com/react-hook-form/resolvers)** - Resolvers para integração
 
 ### **State Management & Data Fetching**
-- **[TanStack React Query](https://tanstack.com/query/)** - Cache e sincronização de dados
-- **[TanStack React Table](https://tanstack.com/table/)** - Tabelas avançadas e interativas
+- **[TanStack React Query](https://tanstack.com/query/)** - Cache inteligente e sincronização de dados
+- **[TanStack React Table](https://tanstack.com/table/)** - Tabelas avançadas e interativas (futuro)
+- **React Context** - Gerenciamento de estado local (tema, sidebar)
 
 ### **Date & Time**
-- **[date-fns](https://date-fns.org/)** - Manipulação de datas
-- **[React Day Picker](https://react-day-picker.js.org/)** - Seletor de datas
+- **[date-fns](https://date-fns.org/)** - Manipulação de datas moderna e modular
+- **[React Day Picker](https://react-day-picker.js.org/)** - Seletor de datas customizável
 
 ### **Charts & Visualization**
-- **[Recharts](https://recharts.org/)** - Gráficos React para dashboard
+- **[Recharts](https://recharts.org/)** - Gráficos React baseados em D3 (dashboard)
 
 ### **Development Tools**
-- **[PostCSS](https://postcss.org/)** - Transformações CSS
+- **[PostCSS](https://postcss.org/)** - Transformações CSS com plugins
 - **[ESLint](https://eslint.org/)** - Linter JavaScript/TypeScript
+- **[@tailwindcss/postcss](https://tailwindcss.com/)** - Plugin PostCSS do Tailwind
+- **[tw-animate-css](https://github.com/jjranalli/tailwind-animate)** - Animações CSS com Tailwind
 
 ---
 
 ## 🏗️ Arquitetura do Sistema
 
 ### **Padrão de Arquitetura**
-- **App Router** (Next.js 15) - Roteamento baseado em diretórios
-- **Server-Side Rendering (SSR)** - Renderização no servidor
-- **Client-Side Rendering (CSR)** - Componentes interativos
-- **API Routes** - Endpoints internos do Next.js
+O sistema utiliza uma arquitetura **Client-Server** moderna:
+
+- **App Router** (Next.js 15) - Roteamento baseado em sistema de arquivos
+- **Server-Side Rendering (SSR)** - Renderização no servidor para SEO e performance
+- **Client-Side Rendering (CSR)** - Componentes interativos no browser
+- **Static Site Generation (SSG)** - Geração estática quando possível
+- **API Routes** - Endpoints internos para integrações
 
 ### **Estrutura de Camadas**
 
 ```
-┌─────────────────────────────────────────┐
-│             FRONTEND (Next.js)          │
-├─────────────────────────────────────────┤
-│        UI Components (shadcn/ui)        │
-├─────────────────────────────────────────┤
-│     State Management (React Query)      │
-├─────────────────────────────────────────┤
-│       Supabase Client (JavaScript)      │
-├─────────────────────────────────────────┤
-│           SUPABASE (Backend)            │
-├─────────────────────────────────────────┤
-│        PostgreSQL (Database)           │
-└─────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────┐
+│                 CLIENT (Browser)                    │
+├─────────────────────────────────────────────────────┤
+│           React Components + UI (shadcn/ui)        │
+├─────────────────────────────────────────────────────┤
+│         State Management (Context + React Query)   │
+├─────────────────────────────────────────────────────┤
+│               Next.js 15 (App Router)              │
+├─────────────────────────────────────────────────────┤
+│        Supabase Client (Multiple Configurations)   │
+│  • Browser Client (RLS) • Server Client • Service  │
+├─────────────────────────────────────────────────────┤
+│                 SUPABASE (BaaS)                     │
+│     • Auth • PostgREST API • Realtime • Storage    │
+├─────────────────────────────────────────────────────┤
+│              PostgreSQL 15 (Database)              │
+│        • Tables • RLS Policies • Functions         │
+└─────────────────────────────────────────────────────┘
 ```
 
 ### **Fluxo de Dados**
 
-1. **Usuário interage** com a interface (páginas React)
-2. **Componentes** fazem requisições via hooks do React Query
-3. **Supabase Client** comunica com a API do Supabase
-4. **Supabase** processa e retorna dados do PostgreSQL
-5. **UI é atualizada** automaticamente via cache do React Query
+1. **Usuário interage** com componentes React (páginas/formulários)
+2. **Componentes** fazem requisições via hooks do React Query + Supabase Client
+3. **Next.js** determina se renderiza no servidor (SSR) ou cliente (CSR)
+4. **Supabase Client** comunica com a API PostgREST (respeita RLS)
+5. **Fallback Strategy** - Se RLS falhar, usa Service Role automaticamente
+6. **PostgreSQL** processa queries e retorna dados estruturados
+7. **UI atualizada** automaticamente via cache do React Query
+8. **Real-time** - Mudanças no banco refletem instantaneamente (futuro)
 
 ---
 
 ## ⚙️ Configuração do Projeto
 
 ### **Pré-requisitos**
-- Node.js 18+ 
-- npm, yarn, pnpm ou bun
-- Conta no Supabase
+- **Node.js 18+** (recomendado: Node.js 20 LTS)
+- **npm**, **yarn**, **pnpm** ou **bun**
+- **Conta no Supabase** (gratuita)
+- **Editor recomendado**: VS Code com extensões TypeScript
 
 ### **1. Clone o Repositório**
 ```bash
@@ -135,6 +195,8 @@ npm install
 yarn install
 # ou
 pnpm install
+# ou
+bun install
 ```
 
 ### **3. Configure as Variáveis de Ambiente**
@@ -150,171 +212,216 @@ SUPABASE_SERVICE_ROLE_KEY=sua-chave-service-role-aqui
 
 **⚠️ Importante**: 
 - Obtenha essas chaves no [Dashboard do Supabase](https://supabase.com/dashboard)
-- Vá em **Settings** → **API**
-- **NUNCA** compartilhe a `SERVICE_ROLE_KEY`
+- Vá em **Settings** → **API** → **Project API keys**
+- **NUNCA** compartilhe ou committe a `SERVICE_ROLE_KEY`
 
 ### **4. Configure o Banco de Dados**
 
 Execute o script SQL no **SQL Editor** do Supabase:
 
 ```sql
--- Veja o arquivo: supabase-rls-policies.sql
--- Ele contém todas as tabelas, políticas RLS e dados iniciais
+-- Execute o arquivo completo: supabase-rls-policies.sql
+-- Ele contém:
+-- • Schema completo das tabelas
+-- • Políticas RLS configuradas
+-- • Funções SQL personalizadas  
+-- • Dados de exemplo (opcional)
 ```
 
 ### **5. Execute o Projeto**
 ```bash
+# Com Turbopack (recomendado - mais rápido)
 npm run dev --turbopack
-# ou
-yarn dev
-# ou
-pnpm dev --turbopack
+
+# Sem Turbopack
+npm run dev
+
+# Produção
+npm run build && npm run start
 ```
 
 Abra [http://localhost:3000](http://localhost:3000) no navegador.
 
 ---
 
-## 🗄️ Banco de Dados
+## 🗄️ Backend - Supabase
 
-### **Tecnologia**
-- **PostgreSQL** via Supabase
-- **Row Level Security (RLS)** ativado
-- **Políticas de segurança** configuradas
-- **Funções SQL** personalizadas
+### **Arquitetura do Supabase**
 
-### **Esquema do Banco (`public`)**
+O Supabase funciona como nosso backend completo, oferecendo:
+
+```
+┌─────────────────────────────────────────┐
+│            SUPABASE STACK               │
+├─────────────────────────────────────────┤
+│  Dashboard Web  │  CLI Tools  │  APIs   │
+├─────────────────────────────────────────┤
+│           Supabase Auth                 │
+│    (JWT, OAuth, Magic Links)           │
+├─────────────────────────────────────────┤
+│            PostgREST                    │
+│     (Auto-generated REST API)          │
+├─────────────────────────────────────────┤
+│          Realtime Server               │
+│      (WebSocket subscriptions)         │
+├─────────────────────────────────────────┤
+│         PostgreSQL 15                  │
+│  (Tables, RLS, Functions, Triggers)    │
+├─────────────────────────────────────────┤
+│          Cloud Infrastructure          │
+│        (AWS/GCP managed)               │
+└─────────────────────────────────────────┘
+```
+
+### **Configurações de Cliente**
+
+O projeto utiliza **3 configurações diferentes** do cliente Supabase:
+
+#### **1. Browser Client (`lib/supabase/client.ts`)**
+```typescript
+// Para uso em componentes client-side
+// Respeita RLS e autenticação do usuário
+createClient(url, anonKey)
+```
+
+#### **2. Server Client (`lib/supabase/server.ts`)**
+```typescript
+// Para uso em Server Components e API Routes
+// Respeita RLS mas acessa cookies do servidor
+createServerClient(url, anonKey, { cookies })
+```
+
+#### **3. Service Role Client (`lib/supabase/service.ts`)**
+```typescript
+// Para operações administrativas (fallback)
+// Bypassa RLS - usado quando auth falha
+createClient(url, serviceRoleKey, { 
+  auth: { persistSession: false } 
+})
+```
+
+### **Estratégia de Fallback**
+
+O sistema implementa uma estratégia inteligente de fallback:
+
+```typescript
+// Exemplo do Dashboard
+let { data } = await supabase
+  .from('agendamentos')
+  .select('*')
+
+// Se data for null (RLS bloqueou), tenta service role
+if (!data && service) {
+  const { data: fallbackData } = await service
+    .from('agendamentos')  
+    .select('*')
+  data = fallbackData
+}
+```
+
+**Benefícios:**
+- ✅ **Segurança**: RLS ativo por padrão
+- ✅ **Confiabilidade**: Fallback automático se auth falhar  
+- ✅ **Flexibilidade**: Diferentes níveis de acesso conforme necessário
+- ✅ **Performance**: Cache no React Query funciona com ambos
+
+### **Schema do Banco de Dados**
 
 #### **Tabelas Principais**
 
 ```sql
 -- Clientes da barbearia
-CREATE TABLE clientes (
-    id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    nome            varchar NOT NULL,
-    telefone        varchar NOT NULL UNIQUE,
-    email           varchar NULL,
-    data_nascimento date NULL,
-    observacoes     text NULL,
-    ativo           boolean DEFAULT true,
-    created_at      timestamptz DEFAULT CURRENT_TIMESTAMP,
-    updated_at      timestamptz DEFAULT CURRENT_TIMESTAMP
-);
+clientes (
+  id uuid PRIMARY KEY,
+  nome varchar NOT NULL,
+  telefone varchar UNIQUE,
+  email varchar,
+  data_nascimento date,
+  observacoes text,
+  ativo boolean DEFAULT true,
+  created_at timestamptz,
+  updated_at timestamptz
+)
 
 -- Serviços oferecidos
-CREATE TABLE servicos (
-    id               uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    nome             varchar NOT NULL,
-    descricao        text NULL,
-    duracao_minutos  integer NOT NULL,
-    preco            numeric NOT NULL,
-    ativo            boolean DEFAULT true,
-    created_at       timestamptz DEFAULT CURRENT_TIMESTAMP,
-    updated_at       timestamptz DEFAULT CURRENT_TIMESTAMP
-);
+servicos (
+  id uuid PRIMARY KEY,
+  nome varchar NOT NULL,
+  descricao text,
+  duracao_minutos integer NOT NULL,
+  preco numeric NOT NULL,
+  ativo boolean DEFAULT true,
+  created_at timestamptz,
+  updated_at timestamptz
+)
 
 -- Agendamentos realizados
-CREATE TABLE agendamentos (
-    id                uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    cliente_id        uuid REFERENCES clientes(id),
-    servico_id        uuid REFERENCES servicos(id),
-    data_agendamento  date NOT NULL,
-    hora_inicio       time NOT NULL,
-    hora_fim          time NOT NULL,
-    status            varchar DEFAULT 'confirmado',
-    observacoes       text NULL,
-    valor_total       numeric NULL,
-    created_at        timestamptz DEFAULT CURRENT_TIMESTAMP,
-    updated_at        timestamptz DEFAULT CURRENT_TIMESTAMP
-);
+agendamentos (
+  id uuid PRIMARY KEY,
+  cliente_id uuid REFERENCES clientes(id),
+  servico_id uuid REFERENCES servicos(id),
+  data_agendamento date NOT NULL,
+  hora_inicio time NOT NULL,
+  hora_fim time NOT NULL,
+  status varchar DEFAULT 'confirmado',
+  observacoes text,
+  valor_total numeric,
+  created_at timestamptz,
+  updated_at timestamptz
+)
 
 -- Horários de funcionamento
-CREATE TABLE horarios_funcionamento (
-    id                uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    dia_semana        integer NOT NULL, -- 0=Domingo, 6=Sábado
-    hora_abertura     time NOT NULL,
-    hora_fechamento   time NOT NULL,
-    intervalo_inicio  time NULL,
-    intervalo_fim     time NULL,
-    ativo             boolean DEFAULT true,
-    created_at        timestamptz DEFAULT CURRENT_TIMESTAMP,
-    updated_at        timestamptz DEFAULT CURRENT_TIMESTAMP
-);
+horarios_funcionamento (
+  id uuid PRIMARY KEY,
+  dia_semana integer NOT NULL, -- 0=Domingo, 6=Sábado
+  hora_abertura time NOT NULL,
+  hora_fechamento time NOT NULL,
+  intervalo_inicio time,
+  intervalo_fim time,
+  ativo boolean DEFAULT true,
+  created_at timestamptz,
+  updated_at timestamptz
+)
 
--- Bloqueios de agenda (feriados, manutenção)
-CREATE TABLE bloqueios_agenda (
-    id             uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    data_bloqueio  date NULL,
-    hora_inicio    time NULL,
-    hora_fim       time NULL,
-    motivo         varchar NULL,
-    tipo           varchar NULL, -- 'feriado', 'manutencao', etc.
-    created_at     timestamptz DEFAULT CURRENT_TIMESTAMP
-);
-
--- Feriados
-CREATE TABLE feriados (
-    id             uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    data           date NULL,
-    descricao      varchar NULL,
-    tipo           varchar NULL,
-    funcionamento  varchar DEFAULT 'fechado'
-);
-
--- Sessões de conversa (para futura integração com chatbot)
-CREATE TABLE sessoes_conversa (
-    id                     uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    cliente_id             uuid REFERENCES clientes(id),
-    telefone               varchar NOT NULL,
-    estado_atual           varchar DEFAULT 'inicial',
-    contexto               jsonb DEFAULT '{}',
-    ultima_mensagem        text NULL,
-    aguardando_resposta    boolean DEFAULT false,
-    servico_selecionado    uuid REFERENCES servicos(id),
-    data_selecionada       date NULL,
-    horario_selecionado    time NULL,
-    criado_em              timestamptz DEFAULT CURRENT_TIMESTAMP,
-    atualizado_em          timestamptz DEFAULT CURRENT_TIMESTAMP,
-    expira_em              timestamptz DEFAULT CURRENT_TIMESTAMP + interval '30 minutes'
-);
+-- Bloqueios de agenda
+bloqueios_agenda (
+  id uuid PRIMARY KEY,
+  data_bloqueio date,
+  hora_inicio time,
+  hora_fim time,
+  motivo varchar,
+  tipo varchar, -- 'feriado', 'manutencao', etc.
+  created_at timestamptz
+)
 ```
 
-#### **Funções SQL Personalizadas**
+#### **Funções SQL Customizadas**
 
 ```sql
 -- Buscar horários disponíveis para agendamento
-CREATE OR REPLACE FUNCTION buscar_horarios_disponiveis(
-    p_data date, 
-    p_servico_id uuid
+CREATE FUNCTION buscar_horarios_disponiveis(
+  p_data date, 
+  p_servico_id uuid
 ) RETURNS TABLE(horario_inicio time, horario_fim time);
 
--- Versão aprimorada da consulta de horários
-CREATE OR REPLACE FUNCTION consultar_horarios_disponiveis_v2(
-    data_param date
+-- Consulta avançada de disponibilidade  
+CREATE FUNCTION consultar_horarios_disponiveis_v2(
+  data_param date
 ) RETURNS json;
 
 -- Limpeza automática de sessões expiradas
-CREATE OR REPLACE FUNCTION limpar_sessoes_expiradas() 
-RETURNS void;
+CREATE FUNCTION limpar_sessoes_expiradas() RETURNS void;
 ```
 
-#### **Políticas RLS (Row Level Security)**
+#### **Políticas RLS**
 
-Todas as tabelas principais possuem RLS ativado com políticas que permitem acesso total para operações de administração:
+Todas as tabelas possuem RLS ativo com políticas administrativas:
 
 ```sql
--- Exemplo de política para agendamentos
-CREATE POLICY "Enable all access for admin" ON agendamentos
-FOR ALL USING (true) WITH CHECK (true);
-```
-
-#### **Relacionamentos**
-
-```
-clientes (1) ──── (N) agendamentos
-servicos (1) ──── (N) agendamentos
-clientes (1) ──── (N) sessoes_conversa
-servicos (1) ──── (N) sessoes_conversa
+-- Exemplo: Acesso total para operações administrativas
+CREATE POLICY "Enable all access for admin" 
+ON agendamentos FOR ALL 
+USING (true) WITH CHECK (true);
 ```
 
 ---
@@ -322,62 +429,165 @@ servicos (1) ──── (N) sessoes_conversa
 ## ✨ Funcionalidades
 
 ### **🏠 Dashboard**
-- Resumo de agendamentos do dia
-- Estatísticas de clientes
-- Gráficos de desempenho
-- Próximos agendamentos
+- **Estatísticas em tempo real**: Agendamentos confirmados hoje, total de clientes
+- **Cards informativos**: Visual clean com ícones e números destacados
+- **Fallback strategy**: Dados sempre carregam, mesmo com problemas de auth
+- **Responsivo**: Layout adaptado para mobile e desktop
 
 ### **📅 Gestão de Agendamentos**
 - ✅ **CRUD Completo**: Criar, visualizar, editar e excluir agendamentos
-- ✅ **Formulário inteligente**: Auto-completa horário de fim e preço baseado no serviço
-- ✅ **Dropdowns dinâmicos**: Carrega clientes e serviços automaticamente
-- ✅ **Roteamento dedicado**: `/agendamentos/novo` e `/agendamentos/[id]/editar`
-- ✅ **Status personalizáveis**: pendente, confirmado, cancelado, finalizado
-- ✅ **Visualização individual** por ID com detalhes completos
-- ✅ **Interface moderna**: Cards responsivos com ações rápidas
+- ✅ **Formulário inteligente**: Auto-completa horário fim e preço baseado no serviço
+- ✅ **Dropdowns dinâmicos**: Carrega clientes e serviços ativos automaticamente
+- ✅ **Status personalizáveis**: Pendente, confirmado, cancelado, finalizado
+- ✅ **Correção de timezone**: Datas exibidas corretamente (formato DD/MM/YYYY)
+- ✅ **Validação robusta**: Formulários com validação em tempo real
+- ✅ **Roteamento RESTful**: `/agendamentos/novo`, `/agendamentos/[id]`, `/agendamentos/[id]/editar`
+- ✅ **Interface moderna**: Cards responsivos com ações rápidas inline
 
 ### **👥 Gestão de Clientes**
-- ✅ **CRUD Completo**: Criar, visualizar, editar e ativar/inativar clientes
-- ✅ **Sistema ativo/inativo**: Preserva dados sem exclusão definitiva
-- ✅ **Feedback visual**: Clientes inativos aparecem com opacidade reduzida e badge
+- ✅ **CRUD Completo**: Criar, visualizar, editar e ativar/inativar
+- ✅ **Sistema ativo/inativo**: Preserva dados históricos sem exclusão definitiva
+- ✅ **Feedback visual**: Clientes inativos com opacidade 60% e badge vermelho
 - ✅ **Formulário completo**: Nome, telefone, email, data nascimento, observações
-- ✅ **Reativação fácil**: Botão para reativar clientes inativos
-- ✅ **Roteamento dedicado**: `/clientes/novo` e `/clientes/[id]/editar`
+- ✅ **Reativação simples**: Botão verde para reativar clientes inativos
+- ✅ **Validação de dados**: Email formato correto, telefone brasileiro
+- ✅ **Busca futura**: Preparado para implementar filtros e busca
 
-### **💼 Gestão de Serviços** 
-- ✅ **CRUD Completo**: Criar, visualizar, editar e ativar/inativar serviços
-- ✅ **Sistema ativo/inativo**: Preserva dados sem exclusão definitiva
-- ✅ **Feedback visual**: Serviços inativos aparecem com opacidade reduzida e badge
-- ✅ **Formulário completo**: Nome, preço, duração, descrição, status ativo
-- ✅ **Reativação fácil**: Botão para reativar serviços inativos
-- ✅ **Roteamento dedicado**: `/servicos/novo` e `/servicos/[id]/editar`
+### **💼 Gestão de Serviços**
+- ✅ **CRUD Completo**: Criar, visualizar, editar e ativar/inativar  
+- ✅ **Sistema ativo/inativo**: Preserva histórico sem perder dados
+- ✅ **Feedback visual**: Serviços inativos claramente identificados
+- ✅ **Campos específicos**: Nome, preço (R$), duração (minutos), descrição
+- ✅ **Validação financeira**: Preços sempre positivos e formatados
+- ✅ **Integração com agendamentos**: Serviços inativos não aparecem em formulários
 
 ### **⏰ Configuração de Horários**
-- ✅ **CRUD Completo**: Criar, visualizar, editar e excluir horários
-- ✅ **Configuração por dia**: 7 dias da semana independentes
-- ✅ **Intervalos opcionais**: Almoço/descanso configuráveis
-- ✅ **Formulário inteligente**: Dropdown de dias da semana
-- ✅ **Roteamento dedicado**: `/horarios/novo` e `/horarios/[id]/editar`
+- ✅ **Interface simplificada**: Apenas editar e ativar/inativar (sem criar/excluir)
+- ✅ **7 dias da semana**: Configuração independente para cada dia
+- ✅ **Intervalos opcionais**: Configuração de almoço/descanso por dia
+- ✅ **Sistema ativo/inativo**: Dias podem ser desativados (fechado)
+- ✅ **Validação temporal**: Hora fim sempre após hora início
+- ✅ **Interface otimizada**: Sem botões desnecessários, foco na edição
 
 ### **🚫 Bloqueios de Agenda**
 - ✅ **CRUD Completo**: Criar, visualizar, editar e excluir bloqueios
-- ✅ **Bloqueios flexíveis**: Dia inteiro ou horários específicos
-- ✅ **Tipos configuráveis**: Feriado, manutenção, pessoal, outros
-- ✅ **Descrição detalhada**: Motivo e observações do bloqueio
-- ✅ **Roteamento dedicado**: `/bloqueios/novo` e `/bloqueios/[id]/editar`
+- ✅ **Flexibilidade temporal**: Dia inteiro ou horários específicos
+- ✅ **Categorização**: Feriado, manutenção, pessoal, outros
+- ✅ **Descrição detalhada**: Campo motivo para explicar o bloqueio
+- ✅ **Calendar picker**: Seleção visual de datas com date-fns
+- ✅ **Validação de período**: Horário fim sempre após horário início
 
-### **🎨 Interface e UX**
-- ✅ **Design consistente**: Padrão unified em todas as páginas
-- ✅ **Feedback visual**: Loading states, confirmações, alertas
-- ✅ **Estados vazios**: CTAs e ícones quando não há dados
-- ✅ **Responsividade**: Funciona perfeitamente em mobile e desktop
-- ✅ **Navegação intuitiva**: Breadcrumbs e botões de ação claros
+### **🎨 Interface e UX Modernas**
+
+#### **🎯 Sidebar Recolhível**
+- ✅ **Animações suaves**: Transições de 500ms com easing
+- ✅ **Tooltips informativos**: Aparecem quando sidebar colapsada
+- ✅ **Alinhamento perfeito**: Botão toggle sempre no mesmo lugar
+- ✅ **Título limpo**: Apenas "Admin" quando expandida
+- ✅ **Rodapé com versão**: Informações de versão sempre visíveis
+
+#### **🌙 Sistema de Tema Dark/Light**
+- ✅ **Toggle no header**: Botão com ícones animados (Sol/Lua)
+- ✅ **Persistência**: Salva preferência no localStorage
+- ✅ **Suporte ao sistema**: Detecta preferência do OS automaticamente
+- ✅ **CSS Variables**: Cores consistentes em ambos os temas
+- ✅ **Transições suaves**: Mudança de tema animada
+- ✅ **Componentes adaptados**: Todos os componentes suportam ambos os temas
+
+#### **🎭 Funcionalidades Visuais**
+- ✅ **Design consistente**: Padrão unificado em todas as páginas
+- ✅ **Feedback visual**: Loading states, confirmações, alertas contextuais
+- ✅ **Estados vazios**: CTAs e ilustrações quando não há dados
+- ✅ **Responsividade total**: Mobile-first, funciona em qualquer tela
+- ✅ **Navegação intuitiva**: Breadcrumbs e botões de ação sempre claros
+- ✅ **Micro-interações**: Hover effects e estados de foco bem definidos
+
+### **📊 Sistema de Versionamento**
+- ✅ **Histórico completo**: Todas as versões documentadas desde v1.0.0
+- ✅ **Modal interativo**: Clique na versão (sidebar) abre detalhes
+- ✅ **Informações detalhadas**: Nome, data, descrição e lista de features
+- ✅ **Navegação no histórico**: Botão para ver todas as versões anteriores
+- ✅ **Categorização**: Major, minor, patch e breaking changes identificados
+- ✅ **Fácil manutenção**: Apenas um arquivo para atualizar (`lib/version-history.ts`)
 
 ### **🔐 Sistema de Autenticação**
-- Login seguro via Supabase Auth
-- Sessões persistentes
-- Logout automático por inatividade
-- Proteção de rotas administrativas
+- **Login seguro**: Via Supabase Auth com JWT tokens
+- **Sessões persistentes**: Mantém login entre sessões do browser
+- **Logout automático**: Por inatividade (configurável)
+- **Proteção de rotas**: Middleware automático para páginas administrativas
+- **Callback handling**: Tratamento correto de redirects pós-login
+
+---
+
+## 📈 Sistema de Versionamento
+
+### **🎯 Como Funciona**
+
+O sistema possui **versionamento integrado** que permite:
+
+1. **Ver versão atual**: Sempre visível no rodapé da sidebar
+2. **Detalhes da versão**: Modal com informações completas ao clicar
+3. **Histórico completo**: Navegação por todas as versões já lançadas
+4. **Fácil manutenção**: Sistema centralizado em arquivos dedicados
+
+### **📁 Arquivos do Sistema**
+
+```
+lib/
+├── version.ts              # Configuração da versão atual
+└── version-history.ts      # Histórico completo de todas as versões
+
+components/
+└── version-info.tsx        # Componente modal interativo
+```
+
+### **🔄 Como Adicionar Nova Versão**
+
+Para lançar uma nova versão:
+
+1. **Edite `lib/version-history.ts`**:
+```typescript
+export const VERSION_HISTORY: VersionInfo[] = [
+  {
+    version: '2.2.0', // ← Nova versão (sempre no topo)
+    name: 'Nome da Nova Release',
+    releaseDate: '2025-XX-XX',
+    type: 'minor', // 'major' | 'minor' | 'patch'
+    breaking: false, // true se quebrar compatibilidade
+    description: 'Resumo das principais mudanças...',
+    features: [
+      'Nova funcionalidade 1',
+      'Nova funcionalidade 2', 
+      'Correção importante X',
+      'Melhoria de performance Y'
+    ]
+  },
+  // versões anteriores automaticamente ficam abaixo...
+]
+```
+
+2. **Atualize `package.json`**:
+```json
+{
+  "version": "2.2.0"
+}
+```
+
+**Pronto!** A versão aparecerá automaticamente em todo o sistema.
+
+### **🏷️ Convenções de Versionamento**
+
+Seguimos o **Semantic Versioning (SemVer)**:
+
+- **Major** (2.0.0): Mudanças que quebram compatibilidade
+- **Minor** (2.1.0): Novas funcionalidades retrocompatíveis  
+- **Patch** (2.1.1): Correções de bugs apenas
+
+**Exemplos no projeto:**
+- `v1.0.0` - Versão inicial (Major)
+- `v2.0.0` - Sistema CRUD completo (Major - mudança arquitetural)
+- `v2.1.0` - Interface moderna + sidebar (Minor - novas features)
+- `v2.2.0` - Próxima release planejada (Minor)
 
 ---
 
@@ -385,155 +595,257 @@ servicos (1) ──── (N) sessoes_conversa
 
 ### **Desenvolvimento**
 ```bash
-# Com Turbopack (recomendado - mais rápido)
+# Método recomendado (mais rápido com Turbopack)
 npm run dev --turbopack
 
-# Sem Turbopack
+# Método tradicional
 npm run dev
+
+# Especificar porta
+npm run dev --turbopack -- --port 3001
 ```
 
 ### **Build de Produção**
 ```bash
+# Gerar build otimizado
 npm run build
+
+# Executar build de produção
 npm run start
+
+# Build + Start em um comando
+npm run build && npm run start
 ```
 
-### **Linting**
+### **Linting e Qualidade**
 ```bash
+# Executar ESLint
 npm run lint
-```
 
-### **Comandos Úteis**
-
-```bash
-# Instalar dependências
-npm install
-
-# Limpar cache do Next.js
-rm -rf .next
+# Corrigir problemas automaticamente
+npm run lint --fix
 
 # Verificar tipos TypeScript
 npx tsc --noEmit
 
-# Gerar tipos do Supabase
-npx supabase gen types typescript --project-id YOUR_PROJECT_ID > lib/supabase/types.ts
+# Verificar tipos em modo watch
+npx tsc --noEmit --watch
+```
+
+### **Comandos Úteis para Desenvolvimento**
+
+```bash
+# Limpar cache do Next.js
+rm -rf .next
+# ou no Windows
+rmdir /s .next
+
+# Limpar node_modules e reinstalar
+rm -rf node_modules package-lock.json
+npm install
+
+# Gerar tipos do Supabase (quando schema mudar)
+npx supabase gen types typescript \
+  --project-id SEU_PROJECT_ID \
+  --schema public > lib/supabase/types.ts
+
+# Ver estatísticas do bundle
+npm run build -- --analyze
+
+# Executar em modo debug  
+NODE_OPTIONS='--inspect' npm run dev
+```
+
+### **Variáveis de Ambiente para Diferentes Ambientes**
+
+```bash
+# .env.local (desenvolvimento)
+NEXT_PUBLIC_SUPABASE_URL=https://dev-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=dev-anon-key
+
+# .env.production (produção)
+NEXT_PUBLIC_SUPABASE_URL=https://prod-project.supabase.co  
+NEXT_PUBLIC_SUPABASE_ANON_KEY=prod-anon-key
+SUPABASE_SERVICE_ROLE_KEY=prod-service-key
+
+# .env.staging (staging)
+NEXT_PUBLIC_SUPABASE_URL=https://staging-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=staging-anon-key
 ```
 
 ---
 
-## 📁 Estrutura de Pastas
+## 📁 Estrutura Detalhada do Projeto
 
 ```
 barbearia-admin/
-├── app/                          # App Router (Next.js 15)
-│   ├── (admin)/                  # Rotas administrativas
-│   │   ├── dashboard/            # Dashboard principal
-│   │   ├── agendamentos/         # Gestão de agendamentos
-│   │   │   ├── [id]/
-│   │   │   │   ├── page.tsx     # Agendamento individual
-│   │   │   │   └── editar/      
-│   │   │   │       └── page.tsx # Editar agendamento
-│   │   │   ├── novo/
-│   │   │   │   └── page.tsx     # Criar agendamento
-│   │   │   └── page.tsx         # Lista de agendamentos
-│   │   ├── clientes/            # Gestão de clientes
-│   │   │   ├── [id]/
-│   │   │   │   └── editar/
-│   │   │   │       └── page.tsx # Editar cliente
-│   │   │   ├── novo/
-│   │   │   │   └── page.tsx     # Criar cliente
-│   │   │   └── page.tsx         # Lista de clientes
-│   │   ├── servicos/            # Gestão de serviços
-│   │   │   ├── [id]/
-│   │   │   │   └── editar/
-│   │   │   │       └── page.tsx # Editar serviço
-│   │   │   ├── novo/
-│   │   │   │   └── page.tsx     # Criar serviço
-│   │   │   └── page.tsx         # Lista de serviços
-│   │   ├── horarios/            # Configuração de horários
-│   │   │   ├── [id]/
-│   │   │   │   └── editar/
-│   │   │   │       └── page.tsx # Editar horário
-│   │   │   ├── novo/
-│   │   │   │   └── page.tsx     # Criar horário
-│   │   │   └── page.tsx         # Lista de horários
-│   │   ├── bloqueios/           # Bloqueios de agenda
-│   │   │   ├── [id]/
-│   │   │   │   └── editar/
-│   │   │   │       └── page.tsx # Editar bloqueio
-│   │   │   ├── novo/
-│   │   │   │   └── page.tsx     # Criar bloqueio
-│   │   │   └── page.tsx         # Lista de bloqueios
-│   │   ├── teste/               # Página de testes
-│   │   └── layout.tsx           # Layout do admin
-│   ├── (auth)/                  # Rotas de autenticação
-│   │   ├── login/               # Página de login
-│   │   └── layout.tsx           # Layout de auth
-│   ├── api/                     # API Routes
-│   │   └── auth/
-│   │       └── callback/        # Callback do Supabase Auth
-│   ├── globals.css              # Estilos globais
-│   ├── layout.tsx               # Layout raiz
-│   └── page.tsx                 # Página inicial
-├── components/                   # Componentes React
-│   ├── admin/                   # Componentes específicos do admin
-│   │   ├── agendamento-form.tsx         # Formulário de agendamentos
-│   │   ├── agendamento-actions.tsx      # Ações de agendamentos
-│   │   ├── agendamentos-list.tsx        # Lista de agendamentos (legacy)
-│   │   ├── agendamentos-client-actions.tsx # Ações legacy
-│   │   ├── client-form.tsx              # Formulário de clientes
-│   │   ├── client-actions.tsx           # Ações de clientes
-│   │   ├── service-form.tsx             # Formulário de serviços
-│   │   ├── service-actions.tsx          # Ações de serviços
-│   │   ├── horario-form.tsx             # Formulário de horários
-│   │   ├── horario-actions.tsx          # Ações de horários
-│   │   ├── bloqueio-form.tsx            # Formulário de bloqueios
-│   │   ├── bloqueio-actions.tsx         # Ações de bloqueios
-│   │   ├── bloqueios-list.tsx           # Lista de bloqueios (legacy)
-│   │   ├── bloqueios-client-actions.tsx # Ações legacy
-│   │   ├── horarios-list.tsx            # Lista de horários (legacy)
-│   │   ├── horarios-client-actions.tsx  # Ações legacy
-│   │   ├── header.tsx                   # Cabeçalho do admin
-│   │   ├── sidebar.tsx                  # Menu lateral
-│   │   └── supabase-test.tsx            # Componente de teste
-│   └── ui/                              # Componentes UI (shadcn/ui)
-│       ├── button.tsx
-│       ├── calendar.tsx
-│       ├── card.tsx
-│       ├── dialog.tsx
-│       ├── form.tsx
-│       ├── input.tsx
-│       ├── label.tsx
-│       ├── select.tsx
-│       ├── switch.tsx                   # Componente Switch
-│       ├── textarea.tsx                 # Componente Textarea
-│       └── table.tsx
-├── lib/                         # Bibliotecas e utilitários
-│   ├── supabase/               # Configuração do Supabase
-│   │   ├── client.ts           # Cliente para uso no browser
-│   │   ├── server.ts           # Cliente para uso no servidor
-│   │   ├── service.ts          # Cliente com service role
-│   │   └── types.ts            # Tipos TypeScript gerados
-│   └── utils.ts                # Utilitários gerais
-├── public/                     # Arquivos estáticos
-│   ├── file.svg
-│   ├── globe.svg
-│   ├── next.svg
-│   ├── vercel.svg
-│   └── window.svg
-├── .env.local                  # Variáveis de ambiente (não commitado)
-├── CLAUDE.md                   # Instruções para o Claude Code
-├── CONFIGURAR-SUPABASE.md      # Guia de configuração do Supabase
-├── TESTE-CRUD.md               # Documentação de testes CRUD
-├── components.json             # Configuração do shadcn/ui
-├── next.config.ts              # Configuração do Next.js
-├── package.json                # Dependências e scripts
-├── postcss.config.mjs          # Configuração do PostCSS
-├── supabase-rls-policies.sql   # Script SQL com schema completo
-├── tailwind.config.js          # Configuração do Tailwind CSS
-├── tsconfig.json               # Configuração do TypeScript
-└── README.md                   # Este arquivo
+├── 📄 README.md                     # Documentação principal do projeto
+├── 📄 CLAUDE.md                     # Instruções para Claude Code AI
+├── 📄 CONFIGURAR-SUPABASE.md        # Guia detalhado de configuração do Supabase
+├── 📄 TESTE-CRUD.md                 # Documentação dos testes de CRUD
+├── 📄 package.json                  # Dependências e scripts (v2.1.0)
+├── 📄 tsconfig.json                 # Configuração TypeScript stricta
+├── 📄 next.config.ts                # Configuração Next.js 15
+├── 📄 postcss.config.mjs           # Configuração PostCSS para Tailwind
+├── 📄 components.json               # Configuração shadcn/ui
+├── 📄 supabase-rls-policies.sql     # Schema completo + políticas RLS
+│
+├── 📂 app/                          # App Router (Next.js 15)
+│   ├── 📄 layout.tsx               # Layout raiz com providers globais
+│   ├── 📄 page.tsx                 # Página inicial (redirecionamento)
+│   ├── 📄 globals.css              # Estilos globais + variáveis CSS para temas
+│   ├── 📄 favicon.ico              # Ícone da aplicação
+│   │
+│   ├── 📂 (admin)/                 # Grupo de rotas administrativas
+│   │   ├── 📄 layout.tsx           # Layout admin (Sidebar + Header + Theme)
+│   │   │
+│   │   ├── 📂 dashboard/           # Dashboard principal
+│   │   │   └── 📄 page.tsx         # Estatísticas, resumos e métricas
+│   │   │
+│   │   ├── 📂 agendamentos/        # Gestão completa de agendamentos
+│   │   │   ├── 📄 page.tsx         # Lista de agendamentos com filtros
+│   │   │   ├── 📂 [id]/            # Agendamento específico
+│   │   │   │   ├── 📄 page.tsx     # Visualização detalhada
+│   │   │   │   └── 📂 editar/
+│   │   │   │       └── 📄 page.tsx # Formulário de edição
+│   │   │   └── 📂 novo/
+│   │   │       └── 📄 page.tsx     # Formulário de criação
+│   │   │
+│   │   ├── 📂 clientes/            # Gestão de clientes
+│   │   │   ├── 📄 page.tsx         # Lista com sistema ativo/inativo
+│   │   │   ├── 📂 [id]/
+│   │   │   │   └── 📂 editar/
+│   │   │   │       └── 📄 page.tsx # Edição de cliente
+│   │   │   └── 📂 novo/
+│   │   │       └── 📄 page.tsx     # Cadastro de novo cliente
+│   │   │
+│   │   ├── 📂 servicos/            # Gestão de serviços
+│   │   │   ├── 📄 page.tsx         # Lista com sistema ativo/inativo  
+│   │   │   ├── 📂 [id]/
+│   │   │   │   └── 📂 editar/
+│   │   │   │       └── 📄 page.tsx # Edição de serviço
+│   │   │   └── 📂 novo/
+│   │   │       └── 📄 page.tsx     # Cadastro de novo serviço
+│   │   │
+│   │   ├── 📂 horarios/            # Configuração de horários
+│   │   │   ├── 📄 page.tsx         # Lista simplificada (só editar/ativar)
+│   │   │   ├── 📂 [id]/
+│   │   │   │   └── 📂 editar/
+│   │   │   │       └── 📄 page.tsx # Edição de horário
+│   │   │   └── 📂 novo/            # Mantido para compatibilidade
+│   │   │       └── 📄 page.tsx
+│   │   │
+│   │   ├── 📂 bloqueios/           # Bloqueios de agenda
+│   │   │   ├── 📄 page.tsx         # Lista de bloqueios
+│   │   │   ├── 📂 [id]/
+│   │   │   │   └── 📂 editar/
+│   │   │   │       └── 📄 page.tsx # Edição de bloqueio
+│   │   │   └── 📂 novo/
+│   │   │       └── 📄 page.tsx     # Novo bloqueio
+│   │   │
+│   │   └── 📂 teste/               # Página de testes do Supabase
+│   │       └── 📄 page.tsx         # Teste de conexão e operações
+│   │
+│   ├── 📂 (auth)/                  # Grupo de rotas de autenticação
+│   │   ├── 📄 layout.tsx           # Layout específico para auth
+│   │   └── 📂 login/
+│   │       └── 📄 page.tsx         # Página de login
+│   │
+│   └── 📂 api/                     # API Routes do Next.js
+│       └── 📂 auth/
+│           └── 📂 callback/
+│               └── 📄 route.ts     # Callback do Supabase Auth
+│
+├── 📂 components/                   # Componentes React reutilizáveis
+│   ├── 📄 theme-provider.tsx       # Context Provider para tema dark/light
+│   ├── 📄 theme-toggle.tsx         # Botão toggle de tema (Sol/Lua)
+│   ├── 📄 version-info.tsx         # Modal de informações de versão
+│   │
+│   ├── 📂 admin/                   # Componentes específicos do admin
+│   │   ├── 📄 header.tsx           # Cabeçalho com tema toggle
+│   │   ├── 📄 sidebar.tsx          # Menu lateral recolhível
+│   │   ├── 📄 sidebar-provider.tsx # Context para estado da sidebar
+│   │   │
+│   │   ├── 📄 agendamento-form.tsx        # Formulário inteligente de agendamentos
+│   │   ├── 📄 agendamento-actions.tsx     # Ações (editar/excluir) para agendamentos
+│   │   ├── 📄 agendamentos-list.tsx       # Lista de agendamentos (legacy)
+│   │   ├── 📄 agendamentos-client-actions.tsx # Client actions (legacy)
+│   │   │
+│   │   ├── 📄 client-form.tsx             # Formulário de clientes
+│   │   ├── 📄 client-actions.tsx          # Ações para clientes (ativar/inativar)
+│   │   │
+│   │   ├── 📄 service-form.tsx            # Formulário de serviços
+│   │   ├── 📄 service-actions.tsx         # Ações para serviços (ativar/inativar)
+│   │   │
+│   │   ├── 📄 horario-form.tsx            # Formulário de horários
+│   │   ├── 📄 horario-actions.tsx         # Ações para horários (ativar/inativar)
+│   │   ├── 📄 horarios-list.tsx           # Lista simplificada de horários
+│   │   ├── 📄 horarios-client-actions.tsx # Client actions para horários
+│   │   │
+│   │   ├── 📄 bloqueio-form.tsx           # Formulário de bloqueios
+│   │   ├── 📄 bloqueio-actions.tsx        # Ações para bloqueios
+│   │   ├── 📄 bloqueios-list.tsx          # Lista de bloqueios (legacy)
+│   │   ├── 📄 bloqueios-client-actions.tsx # Client actions para bloqueios
+│   │   │
+│   │   └── 📄 supabase-test.tsx           # Componente de teste do Supabase
+│   │
+│   └── 📂 ui/                      # Componentes UI base (shadcn/ui)
+│       ├── 📄 badge.tsx            # Badge para status/versões
+│       ├── 📄 button.tsx           # Botão com variantes
+│       ├── 📄 calendar.tsx         # Seletor de datas
+│       ├── 📄 card.tsx             # Cards para layout
+│       ├── 📄 dialog.tsx           # Modais e diálogos
+│       ├── 📄 form.tsx             # Componentes de formulário
+│       ├── 📄 input.tsx            # Input com variantes
+│       ├── 📄 label.tsx            # Labels acessíveis
+│       ├── 📄 select.tsx           # Dropdowns customizados
+│       ├── 📄 switch.tsx           # Toggle switches
+│       ├── 📄 table.tsx            # Tabelas responsivas
+│       └── 📄 textarea.tsx         # Textarea multilinha
+│
+├── 📂 lib/                         # Bibliotecas e utilitários
+│   ├── 📄 utils.ts                 # Utilitários gerais (cn, formatters)
+│   ├── 📄 version.ts               # Configuração da versão atual
+│   ├── 📄 version-history.ts       # Histórico completo de versões
+│   │
+│   └── 📂 supabase/                # Configurações do Supabase
+│       ├── 📄 client.ts            # Cliente para browser (RLS ativo)
+│       ├── 📄 server.ts            # Cliente para servidor (SSR)
+│       ├── 📄 service.ts           # Service role client (admin)
+│       └── 📄 types.ts             # Tipos TypeScript auto-gerados
+│
+├── 📂 public/                      # Arquivos estáticos
+│   ├── 📄 next.svg                 # Logo do Next.js
+│   ├── 📄 vercel.svg               # Logo da Vercel
+│   ├── 📄 file.svg                 # Ícones diversos
+│   ├── 📄 globe.svg
+│   └── 📄 window.svg
+│
+└── 📂 node_modules/                # Dependências instaladas (auto-gerado)
 ```
+
+### **🎯 Principais Diferenciais da Estrutura**
+
+#### **📱 App Router (Next.js 15)**
+- **Roteamento baseado em arquivos**: Cada pasta = rota
+- **Grupos de rotas**: `(admin)` e `(auth)` não afetam URL
+- **Layouts aninhados**: Layout admin apenas para páginas administrativas
+- **Server Components**: Renderização no servidor por padrão
+
+#### **🎨 Componentes Organizados**
+- **`/ui`**: Componentes base reutilizáveis (design system)
+- **`/admin`**: Componentes específicos do contexto administrativo
+- **Separação clara**: Forms, Actions, Lists em arquivos dedicados
+
+#### **⚙️ Configuração Centralizada**
+- **Versionamento**: Sistema completo em `lib/version*`
+- **Supabase**: 3 clientes diferentes para diferentes contextos
+- **Temas**: Provider centralizado com persistência
+
+#### **📊 Estratégia de Dados**
+- **Multiple Clients**: Browser, Server, Service Role
+- **Fallback automático**: Se RLS falhar, usa Service Role
+- **Tipos seguros**: TypeScript em 100% do código
 
 ---
 
@@ -541,110 +853,325 @@ barbearia-admin/
 
 ### **Vercel (Recomendado)**
 
-1. **Conecte seu repositório** ao Vercel
-2. **Configure as variáveis de ambiente**:
-   - `NEXT_PUBLIC_SUPABASE_URL`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-   - `SUPABASE_SERVICE_ROLE_KEY`
-3. **Deploy automático** a cada push
+A **Vercel** é a plataforma ideal para este projeto:
 
+#### **🎯 Por que Vercel?**
+- **Integração nativa**: Criada pelo time do Next.js
+- **Zero configuração**: Deploy automático do repositório
+- **Edge Functions**: Performance global otimizada
+- **Preview deploys**: Cada PR gera URL de teste
+- **Analytics**: Métricas de performance integradas
+
+#### **📋 Passos para Deploy**
+
+1. **Conecte o Repositório**:
+   - Acesse [vercel.com](https://vercel.com)
+   - Importe seu repositório do GitHub
+   - Autorize acesso aos repositórios
+
+2. **Configure Variáveis de Ambiente**:
+   ```bash
+   # No dashboard da Vercel → Settings → Environment Variables
+   NEXT_PUBLIC_SUPABASE_URL=https://seu-projeto.supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=sua-chave-anonima
+   SUPABASE_SERVICE_ROLE_KEY=sua-chave-service-role
+   ```
+
+3. **Configure o Build**:
+   ```bash
+   # Build Command (automático)
+   npm run build
+   
+   # Output Directory (automático)  
+   .next
+   
+   # Node.js Version
+   18.x (ou 20.x)
+   ```
+
+4. **Deploy**:
+   - Clique em **Deploy**
+   - Aguarde ~2-3 minutos
+   - Receba URL de produção: `https://seu-app.vercel.app`
+
+#### **🔄 CI/CD Automático**
 ```bash
-# CLI da Vercel
-npm i -g vercel
-vercel --prod
+# Cada push para main = deploy automático
+git push origin main
+
+# Pull Requests = preview deploy
+# URL de preview gerada automaticamente
 ```
 
 ### **Outras Plataformas**
 
 #### **Netlify**
 ```bash
-npm run build
-# Deploy da pasta .next/
+# Build settings
+Build command: npm run build
+Publish directory: .next
+
+# Environment variables (mesmo da Vercel)
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+SUPABASE_SERVICE_ROLE_KEY=...
 ```
 
-#### **Docker**
+#### **Railway**
+```bash
+# railway.json
+{
+  "build": {
+    "builder": "NIXPACKS"  
+  },
+  "deploy": {
+    "startCommand": "npm start",
+    "restartPolicyType": "ON_FAILURE"
+  }
+}
+```
+
+#### **Docker (Self-hosted)**
 ```dockerfile
+# Dockerfile
 FROM node:18-alpine
+
 WORKDIR /app
+
+# Copy package files
 COPY package*.json ./
 RUN npm ci --only=production
+
+# Copy source
 COPY . .
 RUN npm run build
+
+# Expose port  
 EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:3000/api/health || exit 1
+
+# Start application
 CMD ["npm", "start"]
 ```
 
----
-
-## 🔧 Configurações Importantes
-
-### **Variáveis de Ambiente Obrigatórias**
-
 ```bash
-# .env.local
-NEXT_PUBLIC_SUPABASE_URL=https://xyz.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGc...
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGc...
+# Build & Run
+docker build -t barbearia-admin .
+docker run -p 3000:3000 \
+  -e NEXT_PUBLIC_SUPABASE_URL=... \
+  -e NEXT_PUBLIC_SUPABASE_ANON_KEY=... \
+  -e SUPABASE_SERVICE_ROLE_KEY=... \
+  barbearia-admin
 ```
 
-### **Configuração do Supabase**
+### **🔧 Configurações de Produção**
 
-1. **RLS Policies**: Configuradas para permitir acesso total ao admin
-2. **Auth Settings**: Configurar URLs de callback no dashboard
-3. **Database Schema**: Executar `supabase-rls-policies.sql`
-
-### **Next.js Config**
-
+#### **Next.js Config para Produção**
 ```typescript
 // next.config.ts
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  experimental: {
-    // Configurações experimentais se necessário
-  }
+  // Otimizações de produção
+  compress: true,
+  poweredByHeader: false,
+  
+  // Imagens otimizadas
+  images: {
+    domains: ['supabase.co'],
+    formats: ['image/avif', 'image/webp'],
+  },
+  
+  // Headers de segurança
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
 ```
 
+#### **Variáveis de Ambiente Organizadas**
+```bash
+# .env.production
+NODE_ENV=production
+NEXT_PUBLIC_SUPABASE_URL=https://prod-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=prod-anon-key
+SUPABASE_SERVICE_ROLE_KEY=prod-service-key
+
+# Analytics (opcional)
+NEXT_PUBLIC_VERCEL_ANALYTICS=1
+NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+
+# Monitoring (opcional)  
+SENTRY_DSN=https://xxxxx@sentry.io/xxxxx
+```
+
 ---
 
-## 📚 Documentação Adicional
+## 🚀 Atualizações Recentes
 
-- **[CLAUDE.md](./CLAUDE.md)** - Instruções para o Claude Code
-- **[CONFIGURAR-SUPABASE.md](./CONFIGURAR-SUPABASE.md)** - Guia detalhado do Supabase
-- **[TESTE-CRUD.md](./TESTE-CRUD.md)** - Documentação de testes
-- **[supabase-rls-policies.sql](./supabase-rls-policies.sql)** - Schema completo do banco
+### **v2.1.0 - Interface Moderna e Responsiva** 
+*Lançado em 22 de Agosto de 2025*
+
+#### **🎨 Principais Novidades**
+- **Sidebar Recolhível**: Menu lateral com animações suaves de 500ms e tooltips informativos
+- **Sistema de Tema Completo**: Dark/Light mode com toggle animado e persistência no localStorage  
+- **Correção de Timezone**: Resolução definitiva dos problemas de data em agendamentos
+- **Interface de Horários Otimizada**: Removidos botões desnecessários, foco na edição e ativação
+- **Sistema de Versionamento**: Modal interativo com histórico completo de versões
+
+#### **⚡ Melhorias Técnicas**
+1. **UX Aprimorada**:
+   - Transições mais fluidas em toda a interface
+   - Alinhamento perfeito de elementos da sidebar
+   - Título simplificado e design clean
+   - Tooltips contextuais quando sidebar colapsada
+
+2. **Temas Avançados**:  
+   - CSS Variables para cores consistentes
+   - Suporte automático à preferência do sistema operacional
+   - Ícones animados no toggle (Sol → Lua)
+   - Todos os componentes adaptados para ambos os temas
+
+3. **Correções Críticas**:
+   - Datas sempre no formato brasileiro (DD/MM/YYYY)
+   - Eliminação total de problemas de fuso horário
+   - Consistência entre formulários e visualizações
+   - Performance melhorada na renderização
+
+#### **🔧 Arquivos Modificados/Criados**
+```
+components/
+├── theme-provider.tsx          # Novo: Sistema de tema
+├── theme-toggle.tsx            # Novo: Toggle dark/light  
+├── version-info.tsx            # Novo: Modal de versão
+├── admin/
+│   ├── header.tsx              # Atualizado: Toggle de tema
+│   ├── sidebar.tsx             # Atualizado: Recolhível + versão
+│   └── sidebar-provider.tsx    # Novo: Context da sidebar
+
+lib/
+├── version.ts                  # Novo: Config da versão atual
+└── version-history.ts          # Novo: Histórico completo
+```
 
 ---
 
-## 🤝 Equipe de Desenvolvimento
+## 🤝 Contribuição e Desenvolvimento
 
-Este projeto foi desenvolvido como parte de um trabalho acadêmico. Para contribuições:
+### **Como Contribuir**
 
-1. Fork o repositório
-2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`)
-3. Commit suas mudanças (`git commit -m 'Adiciona nova feature'`)
-4. Push para a branch (`git push origin feature/nova-feature`)
-5. Abra um Pull Request
+1. **Fork o repositório**
+2. **Crie uma branch** para sua feature:
+   ```bash
+   git checkout -b feature/nova-funcionalidade
+   ```
+3. **Commit suas mudanças**:
+   ```bash
+   git commit -m 'feat: adiciona nova funcionalidade X'
+   ```
+4. **Push para a branch**:
+   ```bash
+   git push origin feature/nova-funcionalidade
+   ```
+5. **Abra um Pull Request**
+
+### **Padrões de Commit**
+```bash
+feat: nova funcionalidade
+fix: correção de bug  
+docs: atualização de documentação
+style: mudanças de formatação
+refactor: refatoração de código
+test: adição de testes
+chore: tarefas de manutenção
+```
+
+### **Roadmap Futuro**
+- [ ] **Sistema de Relatórios** completo
+- [ ] **Notificações Push** para agendamentos
+- [ ] **API pública** para integrações
+- [ ] **Aplicativo mobile** (React Native)
+- [ ] **Multi-tenancy** para múltiplas barbearias
+- [ ] **Integração com pagamentos**
+- [ ] **Chatbot WhatsApp** para agendamentos
 
 ---
 
 ## 📝 Licença
 
-Este projeto está licenciado sob a MIT License - veja o arquivo [LICENSE](LICENSE) para detalhes.
+Este projeto está licenciado sob a **MIT License**.
+
+```
+MIT License
+
+Copyright (c) 2025 Bárbaros Barbearia
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+```
 
 ---
 
-## 🆘 Suporte
+## 🆘 Suporte e Documentação
 
+### **📚 Documentação Adicional**
+- **[CLAUDE.md](./CLAUDE.md)** - Instruções específicas para Claude Code AI
+- **[CONFIGURAR-SUPABASE.md](./CONFIGURAR-SUPABASE.md)** - Guia detalhado de configuração do Supabase
+- **[TESTE-CRUD.md](./TESTE-CRUD.md)** - Documentação de testes e validações
+- **[supabase-rls-policies.sql](./supabase-rls-policies.sql)** - Schema completo e políticas de segurança
+
+### **🔗 Links Úteis**
+- **[Supabase Docs](https://supabase.com/docs)** - Documentação oficial
+- **[Next.js Docs](https://nextjs.org/docs)** - Guias do framework
+- **[shadcn/ui](https://ui.shadcn.com)** - Biblioteca de componentes
+- **[Tailwind CSS](https://tailwindcss.com/docs)** - Framework CSS
+
+### **💬 Suporte**
 Para dúvidas ou problemas:
-
-1. Verifique a documentação no diretório `/docs`
-2. Consulte os arquivos `CONFIGURAR-SUPABASE.md` e `TESTE-CRUD.md`
-3. Abra uma issue no repositório
+1. Consulte a documentação nos arquivos `.md`
+2. Verifique as configurações do Supabase
+3. Abra uma **issue** no repositório com:
+   - Descrição detalhada do problema
+   - Steps para reproduzir
+   - Screenshots se aplicável
+   - Logs de erro (se houver)
 
 ---
 
 **💈 Desenvolvido com ❤️ para modernizar a gestão da Bárbaros Barbearia**
+
+*Sistema v2.1.0 - Interface Moderna e Responsiva*

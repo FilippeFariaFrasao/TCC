@@ -180,7 +180,7 @@ export function AgendamentosList() {
                         href={`/agendamentos/${agendamento.id}`} 
                         className="hover:underline"
                       >
-                        {new Date(agendamento.data_agendamento).toLocaleDateString('pt-BR')}
+                        {agendamento.data_agendamento.split('-').reverse().join('/')}
                       </Link>
                     </CardTitle>
                     

@@ -64,7 +64,7 @@ export default async function ClientesPage() {
                 {cliente.data_nascimento && (
                   <div className="flex items-center gap-2 text-sm">
                     <Calendar className="h-4 w-4 text-gray-500" />
-                    <span>{new Date(cliente.data_nascimento).toLocaleDateString('pt-BR')}</span>
+                    <span>{cliente.data_nascimento.split('-').reverse().join('/')}</span>
                   </div>
                 )}
                 {cliente.observacoes && (

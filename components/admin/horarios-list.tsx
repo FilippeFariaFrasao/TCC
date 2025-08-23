@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { createClient } from '@/lib/supabase/client'
-import { Clock, Calendar, Edit, Plus, Trash2, AlertTriangle } from 'lucide-react'
+import { Clock, Calendar, Edit, Plus } from 'lucide-react'
 
 interface HorarioFuncionamento {
   id: string
@@ -28,8 +28,6 @@ export function HorariosList() {
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [editingHorario, setEditingHorario] = useState<HorarioFuncionamento | null>(null)
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
-  const [horarioToDelete, setHorarioToDelete] = useState<string | null>(null)
 
   const [formData, setFormData] = useState({
     dia_semana: 0,
@@ -127,23 +125,6 @@ export function HorariosList() {
     }
   }
 
-  const handleDelete = async (horarioId: string) => {
-    try {
-      const { error } = await supabase
-        .from('horarios_funcionamento')
-        .delete()
-        .eq('id', horarioId)
-
-      if (error) throw error
-      
-      setHorarios(prev => prev.filter(h => h.id !== horarioId))
-      setShowDeleteDialog(false)
-      setHorarioToDelete(null)
-    } catch (error) {
-      console.error('Erro ao deletar horário:', error)
-      alert('Erro ao deletar horário')
-    }
-  }
 
   const toggleAtivo = async (horarioId: string, ativo: boolean) => {
     try {
@@ -171,10 +152,6 @@ export function HorariosList() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Horários de Funcionamento</h1>
-        <Button onClick={openCreateForm} className="flex items-center gap-2">
-          <Plus className="h-4 w-4" />
-          Adicionar Horário
-        </Button>
       </div>
 
       <div className="grid gap-4">
@@ -182,9 +159,6 @@ export function HorariosList() {
           <Card>
             <CardContent className="text-center py-8">
               <p className="text-gray-500">Nenhum horário configurado</p>
-              <Button onClick={openCreateForm} className="mt-4">
-                Configurar Horários
-              </Button>
             </CardContent>
           </Card>
         ) : (
@@ -202,9 +176,9 @@ export function HorariosList() {
                       variant="outline"
                       size="sm"
                       onClick={() => toggleAtivo(horario.id, horario.ativo)}
-                      className={horario.ativo ? "text-orange-600" : "text-green-600"}
+                      className={horario.ativo ? "text-orange-600 hover:text-orange-700" : "text-green-600 hover:text-green-700"}
                     >
-                      {horario.ativo ? 'Desativar' : 'Ativar'}
+                      {horario.ativo ? 'Inativar' : 'Ativar'}
                     </Button>
                     <Button
                       variant="outline"
@@ -212,17 +186,6 @@ export function HorariosList() {
                       onClick={() => openEditForm(horario)}
                     >
                       <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setHorarioToDelete(horario.id)
-                        setShowDeleteDialog(true)
-                      }}
-                      className="text-red-600"
-                    >
-                      <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>
@@ -340,32 +303,6 @@ export function HorariosList() {
         </DialogContent>
       </Dialog>
 
-      {/* Delete Dialog */}
-      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-red-500" />
-              Confirmar Exclusão
-            </DialogTitle>
-          </DialogHeader>
-          <div className="py-4">
-            <p>Tem certeza que deseja excluir este horário de funcionamento?</p>
-            <p className="text-sm text-gray-500 mt-2">Esta ação não pode ser desfeita.</p>
-          </div>
-          <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>
-              Cancelar
-            </Button>
-            <Button 
-              variant="destructive" 
-              onClick={() => horarioToDelete && handleDelete(horarioToDelete)}
-            >
-              Excluir
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }

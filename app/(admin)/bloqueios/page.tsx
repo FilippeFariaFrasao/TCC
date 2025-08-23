@@ -58,7 +58,7 @@ export default async function BloqueiosPage() {
                     <CardTitle className="flex items-center gap-2">
                       <Ban className="h-5 w-5 text-red-500" />
                       {bloqueio.data_bloqueio ?
-                        new Date(bloqueio.data_bloqueio).toLocaleDateString('pt-BR') :
+                        bloqueio.data_bloqueio.split('-').reverse().join('/') :
                         'Data não definida'
                       }
                     </CardTitle>
