@@ -78,30 +78,6 @@ export function ClientForm({ cliente, isEditing = false }: ClientFormProps) {
     }
   }
 
-  const handleDelete = async () => {
-    if (!cliente || !confirm('Tem certeza que deseja excluir este cliente?')) {
-      return
-    }
-
-    setLoading(true)
-    try {
-      const supabase = createClient()
-      const { error } = await supabase
-        .from('clientes')
-        .update({ ativo: false })
-        .eq('id', cliente.id)
-
-      if (error) throw error
-
-      router.push('/clientes')
-      router.refresh()
-    } catch (error) {
-      console.error('Erro ao excluir cliente:', error)
-      alert('Erro ao excluir cliente. Tente novamente.')
-    } finally {
-      setLoading(false)
-    }
-  }
 
   return (
     <form onSubmit={handleSubmit}>
@@ -194,19 +170,6 @@ export function ClientForm({ cliente, isEditing = false }: ClientFormProps) {
             >
               Cancelar
             </Button>
-
-            {isEditing && cliente && (
-              <Button
-                type="button"
-                variant="destructive"
-                onClick={handleDelete}
-                disabled={loading}
-                className="ml-auto"
-              >
-                {loading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-                Excluir
-              </Button>
-            )}
           </div>
         </CardContent>
       </Card>

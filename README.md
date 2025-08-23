@@ -21,10 +21,13 @@ Sistema completo de gerenciamento para barbearias desenvolvido com **Next.js 15*
 Este é um **sistema administrativo completo** para barbearias que oferece:
 
 - ✅ **Dashboard** com estatísticas e resumos
-- ✅ **Gestão completa de agendamentos** (visualizar, criar, editar)
-- ✅ **Cadastro e gerenciamento de clientes**
-- ✅ **Configuração de horários de funcionamento**
-- ✅ **Sistema de bloqueios de agenda** (feriados, manutenção, etc.)
+- ✅ **Gestão completa de agendamentos** (CRUD completo com formulários inteligentes)
+- ✅ **Gestão completa de clientes** (CRUD completo com sistema ativo/inativo)
+- ✅ **Gestão completa de serviços** (CRUD completo com sistema ativo/inativo)
+- ✅ **Configuração de horários de funcionamento** (CRUD completo)
+- ✅ **Sistema de bloqueios de agenda** (CRUD completo - feriados, manutenção, etc.)
+- ✅ **Sistema inteligente de ativação/inativação** (preserva dados sem exclusão definitiva)
+- ✅ **Interface moderna e responsiva** com feedback visual completo
 - ✅ **Autenticação segura** via Supabase Auth
 - ❌ **Relatórios** (planejado - não implementado)
 
@@ -325,29 +328,50 @@ servicos (1) ──── (N) sessoes_conversa
 - Próximos agendamentos
 
 ### **📅 Gestão de Agendamentos**
-- Visualização em lista com filtros
-- Detalhes completos do agendamento
-- Status: confirmado, cancelado, concluído
-- Informações do cliente e serviço
-- Visualização individual por ID
+- ✅ **CRUD Completo**: Criar, visualizar, editar e excluir agendamentos
+- ✅ **Formulário inteligente**: Auto-completa horário de fim e preço baseado no serviço
+- ✅ **Dropdowns dinâmicos**: Carrega clientes e serviços automaticamente
+- ✅ **Roteamento dedicado**: `/agendamentos/novo` e `/agendamentos/[id]/editar`
+- ✅ **Status personalizáveis**: pendente, confirmado, cancelado, finalizado
+- ✅ **Visualização individual** por ID com detalhes completos
+- ✅ **Interface moderna**: Cards responsivos com ações rápidas
 
 ### **👥 Gestão de Clientes**
-- Cadastro completo de clientes
-- Histórico de agendamentos
-- Informações de contato
-- Observações e notas
-- Status ativo/inativo
+- ✅ **CRUD Completo**: Criar, visualizar, editar e ativar/inativar clientes
+- ✅ **Sistema ativo/inativo**: Preserva dados sem exclusão definitiva
+- ✅ **Feedback visual**: Clientes inativos aparecem com opacidade reduzida e badge
+- ✅ **Formulário completo**: Nome, telefone, email, data nascimento, observações
+- ✅ **Reativação fácil**: Botão para reativar clientes inativos
+- ✅ **Roteamento dedicado**: `/clientes/novo` e `/clientes/[id]/editar`
+
+### **💼 Gestão de Serviços** 
+- ✅ **CRUD Completo**: Criar, visualizar, editar e ativar/inativar serviços
+- ✅ **Sistema ativo/inativo**: Preserva dados sem exclusão definitiva
+- ✅ **Feedback visual**: Serviços inativos aparecem com opacidade reduzida e badge
+- ✅ **Formulário completo**: Nome, preço, duração, descrição, status ativo
+- ✅ **Reativação fácil**: Botão para reativar serviços inativos
+- ✅ **Roteamento dedicado**: `/servicos/novo` e `/servicos/[id]/editar`
 
 ### **⏰ Configuração de Horários**
-- Horários de funcionamento por dia da semana
-- Configuração de intervalos (almoço/descanso)
-- Ativação/desativação por dia
+- ✅ **CRUD Completo**: Criar, visualizar, editar e excluir horários
+- ✅ **Configuração por dia**: 7 dias da semana independentes
+- ✅ **Intervalos opcionais**: Almoço/descanso configuráveis
+- ✅ **Formulário inteligente**: Dropdown de dias da semana
+- ✅ **Roteamento dedicado**: `/horarios/novo` e `/horarios/[id]/editar`
 
 ### **🚫 Bloqueios de Agenda**
-- Bloqueio de dias específicos
-- Bloqueio de horários parciais
-- Motivos: feriados, manutenção, etc.
-- Tipos configuráveis de bloqueio
+- ✅ **CRUD Completo**: Criar, visualizar, editar e excluir bloqueios
+- ✅ **Bloqueios flexíveis**: Dia inteiro ou horários específicos
+- ✅ **Tipos configuráveis**: Feriado, manutenção, pessoal, outros
+- ✅ **Descrição detalhada**: Motivo e observações do bloqueio
+- ✅ **Roteamento dedicado**: `/bloqueios/novo` e `/bloqueios/[id]/editar`
+
+### **🎨 Interface e UX**
+- ✅ **Design consistente**: Padrão unified em todas as páginas
+- ✅ **Feedback visual**: Loading states, confirmações, alertas
+- ✅ **Estados vazios**: CTAs e ícones quando não há dados
+- ✅ **Responsividade**: Funciona perfeitamente em mobile e desktop
+- ✅ **Navegação intuitiva**: Breadcrumbs e botões de ação claros
 
 ### **🔐 Sistema de Autenticação**
 - Login seguro via Supabase Auth
@@ -405,11 +429,41 @@ barbearia-admin/
 │   ├── (admin)/                  # Rotas administrativas
 │   │   ├── dashboard/            # Dashboard principal
 │   │   ├── agendamentos/         # Gestão de agendamentos
-│   │   │   ├── [id]/            # Agendamento individual
+│   │   │   ├── [id]/
+│   │   │   │   ├── page.tsx     # Agendamento individual
+│   │   │   │   └── editar/      
+│   │   │   │       └── page.tsx # Editar agendamento
+│   │   │   ├── novo/
+│   │   │   │   └── page.tsx     # Criar agendamento
 │   │   │   └── page.tsx         # Lista de agendamentos
 │   │   ├── clientes/            # Gestão de clientes
+│   │   │   ├── [id]/
+│   │   │   │   └── editar/
+│   │   │   │       └── page.tsx # Editar cliente
+│   │   │   ├── novo/
+│   │   │   │   └── page.tsx     # Criar cliente
+│   │   │   └── page.tsx         # Lista de clientes
+│   │   ├── servicos/            # Gestão de serviços
+│   │   │   ├── [id]/
+│   │   │   │   └── editar/
+│   │   │   │       └── page.tsx # Editar serviço
+│   │   │   ├── novo/
+│   │   │   │   └── page.tsx     # Criar serviço
+│   │   │   └── page.tsx         # Lista de serviços
 │   │   ├── horarios/            # Configuração de horários
+│   │   │   ├── [id]/
+│   │   │   │   └── editar/
+│   │   │   │       └── page.tsx # Editar horário
+│   │   │   ├── novo/
+│   │   │   │   └── page.tsx     # Criar horário
+│   │   │   └── page.tsx         # Lista de horários
 │   │   ├── bloqueios/           # Bloqueios de agenda
+│   │   │   ├── [id]/
+│   │   │   │   └── editar/
+│   │   │   │       └── page.tsx # Editar bloqueio
+│   │   │   ├── novo/
+│   │   │   │   └── page.tsx     # Criar bloqueio
+│   │   │   └── page.tsx         # Lista de bloqueios
 │   │   ├── teste/               # Página de testes
 │   │   └── layout.tsx           # Layout do admin
 │   ├── (auth)/                  # Rotas de autenticação
@@ -423,17 +477,26 @@ barbearia-admin/
 │   └── page.tsx                 # Página inicial
 ├── components/                   # Componentes React
 │   ├── admin/                   # Componentes específicos do admin
-│   │   ├── agendamento-form.tsx
-│   │   ├── agendamentos-list.tsx
-│   │   ├── agendamentos-client-actions.tsx
-│   │   ├── bloqueios-list.tsx
-│   │   ├── bloqueios-client-actions.tsx
-│   │   ├── horarios-list.tsx
-│   │   ├── horarios-client-actions.tsx
-│   │   ├── header.tsx           # Cabeçalho do admin
-│   │   ├── sidebar.tsx          # Menu lateral
-│   │   └── supabase-test.tsx    # Componente de teste
-│   └── ui/                      # Componentes UI (shadcn/ui)
+│   │   ├── agendamento-form.tsx         # Formulário de agendamentos
+│   │   ├── agendamento-actions.tsx      # Ações de agendamentos
+│   │   ├── agendamentos-list.tsx        # Lista de agendamentos (legacy)
+│   │   ├── agendamentos-client-actions.tsx # Ações legacy
+│   │   ├── client-form.tsx              # Formulário de clientes
+│   │   ├── client-actions.tsx           # Ações de clientes
+│   │   ├── service-form.tsx             # Formulário de serviços
+│   │   ├── service-actions.tsx          # Ações de serviços
+│   │   ├── horario-form.tsx             # Formulário de horários
+│   │   ├── horario-actions.tsx          # Ações de horários
+│   │   ├── bloqueio-form.tsx            # Formulário de bloqueios
+│   │   ├── bloqueio-actions.tsx         # Ações de bloqueios
+│   │   ├── bloqueios-list.tsx           # Lista de bloqueios (legacy)
+│   │   ├── bloqueios-client-actions.tsx # Ações legacy
+│   │   ├── horarios-list.tsx            # Lista de horários (legacy)
+│   │   ├── horarios-client-actions.tsx  # Ações legacy
+│   │   ├── header.tsx                   # Cabeçalho do admin
+│   │   ├── sidebar.tsx                  # Menu lateral
+│   │   └── supabase-test.tsx            # Componente de teste
+│   └── ui/                              # Componentes UI (shadcn/ui)
 │       ├── button.tsx
 │       ├── calendar.tsx
 │       ├── card.tsx
@@ -442,6 +505,8 @@ barbearia-admin/
 │       ├── input.tsx
 │       ├── label.tsx
 │       ├── select.tsx
+│       ├── switch.tsx                   # Componente Switch
+│       ├── textarea.tsx                 # Componente Textarea
 │       └── table.tsx
 ├── lib/                         # Bibliotecas e utilitários
 │   ├── supabase/               # Configuração do Supabase

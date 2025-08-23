@@ -4,19 +4,21 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
-import { Pencil, Trash2, Loader2 } from 'lucide-react'
+import { Pencil, Power, PowerOff, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 
 interface ClientActionsProps {
   clienteId: string
+  isActive: boolean
 }
 
-export function ClientActions({ clienteId }: ClientActionsProps) {
+export function ClientActions({ clienteId, isActive }: ClientActionsProps) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
 
-  const handleDelete = async () => {
-    if (!confirm('Tem certeza que deseja excluir este cliente?')) {
+  const handleToggleActive = async () => {
+    const action = isActive ? 'inativar' : 'reativar'
+    if (!confirm(`Tem certeza que deseja ${action} este cliente?`)) {
       return
     }
 
@@ -25,15 +27,15 @@ export function ClientActions({ clienteId }: ClientActionsProps) {
       const supabase = createClient()
       const { error } = await supabase
         .from('clientes')
-        .update({ ativo: false })
+        .update({ ativo: !isActive })
         .eq('id', clienteId)
 
       if (error) throw error
 
       router.refresh()
     } catch (error) {
-      console.error('Erro ao excluir cliente:', error)
-      alert('Erro ao excluir cliente. Tente novamente.')
+      console.error(`Erro ao ${action} cliente:`, error)
+      alert(`Erro ao ${action} cliente. Tente novamente.`)
     } finally {
       setLoading(false)
     }
@@ -50,16 +52,18 @@ export function ClientActions({ clienteId }: ClientActionsProps) {
       <Button 
         variant="outline" 
         size="sm" 
-        className="text-red-600 hover:text-red-700"
-        onClick={handleDelete}
+        className={isActive ? "text-red-600 hover:text-red-700" : "text-green-600 hover:text-green-700"}
+        onClick={handleToggleActive}
         disabled={loading}
       >
         {loading ? (
           <Loader2 className="h-3 w-3 animate-spin mr-1" />
+        ) : isActive ? (
+          <PowerOff className="h-3 w-3 mr-1" />
         ) : (
-          <Trash2 className="h-3 w-3 mr-1" />
+          <Power className="h-3 w-3 mr-1" />
         )}
-        Excluir
+        {isActive ? 'Inativar' : 'Reativar'}
       </Button>
     </div>
   )

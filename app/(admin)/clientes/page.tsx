@@ -13,14 +13,12 @@ export default async function ClientesPage() {
   let { data: clientes } = await supabase
     .from('clientes')
     .select('*')
-    .eq('ativo', true)
     .order('nome', { ascending: true })
 
   if (!clientes && service) {
     const { data } = await service
       .from('clientes')
       .select('*')
-      .eq('ativo', true)
       .order('nome', { ascending: true })
     clientes = data || []
   }
@@ -39,11 +37,16 @@ export default async function ClientesPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {clientes?.map((cliente) => (
-          <Card key={cliente.id}>
+          <Card key={cliente.id} className={`${!cliente.ativo ? 'opacity-60 border-gray-300' : ''}`}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <User className="h-5 w-5" />
                 {cliente.nome}
+                {!cliente.ativo && (
+                  <span className="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">
+                    Inativo
+                  </span>
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -69,7 +72,7 @@ export default async function ClientesPage() {
                     <p className="text-gray-600">{cliente.observacoes}</p>
                   </div>
                 )}
-                <ClientActions clienteId={cliente.id} />
+                <ClientActions clienteId={cliente.id} isActive={cliente.ativo} />
               </div>
             </CardContent>
           </Card>
