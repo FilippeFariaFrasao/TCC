@@ -578,17 +578,57 @@ export const VERSION_HISTORY: VersionInfo[] = [
 
 ### **🏷️ Convenções de Versionamento**
 
-Seguimos o **Semantic Versioning (SemVer)**:
+Seguimos o **Semantic Versioning (SemVer)** para controlar o impacto das mudanças:
 
-- **Major** (2.0.0): Mudanças que quebram compatibilidade
-- **Minor** (2.1.0): Novas funcionalidades retrocompatíveis  
-- **Patch** (2.1.1): Correções de bugs apenas
+#### **🔴 MAJOR (X.0.0) - Mudanças que Quebram Compatibilidade**
+- Alterações na API que podem quebrar código existente
+- Mudanças arquiteturais significativas
+- Remoção de funcionalidades
+- Código antigo pode parar de funcionar
 
-**Exemplos no projeto:**
-- `v1.0.0` - Versão inicial (Major)
-- `v2.0.0` - Sistema CRUD completo (Major - mudança arquitetural)
-- `v2.1.0` - Interface moderna + sidebar (Minor - novas features)
-- `v2.2.0` - Próxima release planejada (Minor)
+**Exemplos:**
+```typescript
+v1.0.0 → v2.0.0  // Nova arquitetura, sistema CRUD completo
+v2.0.0 → v3.0.0  // API REST reformulada (hipotético)
+```
+
+#### **🟡 MINOR (X.Y.0) - Novas Funcionalidades Retrocompatíveis**
+- Adiciona features sem quebrar o que já existe
+- Melhorias e expansões do sistema
+- Código antigo continua funcionando normalmente
+- Adições seguras ao projeto
+
+**Exemplos:**
+```typescript
+v2.0.0 → v2.1.0  // Sidebar recolhível + temas
+v2.1.0 → v2.2.0  // Dashboard expandido com 6 métricas
+```
+
+#### **🟢 PATCH (X.Y.Z) - Apenas Correções de Bugs**
+- Correção de problemas existentes
+- Não adiciona funcionalidades novas
+- Não quebra compatibilidade
+- Fixes, hotfixes e melhorias de performance
+
+**Exemplos:**
+```typescript
+v2.2.0 → v2.2.1  // Corrige bug no cálculo de receita (hipotético)
+v2.2.1 → v2.2.2  // Fix de CSS responsivo (hipotético)
+```
+
+#### **🤔 Como Decidir o Tipo de Versão:**
+
+```bash
+Quebra algo existente?     → MAJOR   (breaking changes)
+Adiciona algo novo?        → MINOR   (new features)  
+Só corrige bugs?          → PATCH   (bug fixes)
+```
+
+#### **📈 Histórico Real do Projeto:**
+- **v1.0.0** (Major) - Versão inicial do projeto
+- **v2.0.0** (Major) - Sistema CRUD completo (breaking: nova arquitetura)
+- **v2.1.0** (Minor) - Interface moderna + sidebar recolhível
+- **v2.2.0** (Minor) - Dashboard expandido com métricas detalhadas
 
 ---
 
