@@ -1,10 +1,8 @@
 {
   "mcpServers": {
     "supabase-barbaros": {
-      "command": "cmd",
+      "command": "npx",
       "args": [
-        "/c",
-        "npx",
         "-y",
         "@supabase/mcp-server-supabase@latest",
         "--read-only",
@@ -13,6 +11,30 @@
       "env": {
         "SUPABASE_ACCESS_TOKEN": "sbp_745ef76b887b13c0ecb7ca22b0bc976193c4fa24"
       }
+    },
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@executeautomation/playwright-mcp-server"
+      ]
+    },
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "<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>"
+      }
+    },
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ]
     }
   }
 }

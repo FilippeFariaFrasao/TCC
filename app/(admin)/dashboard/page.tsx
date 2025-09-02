@@ -8,8 +8,9 @@ export default async function DashboardPage() {
   const service = createServiceClient()
 
   // Buscar dados do dashboard
-  const hoje = new Date().toISOString().split('T')[0]
-  const inicioMes = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0]
+  const agora = new Date()
+  const hoje = new Date(agora.getTime() - (agora.getTimezoneOffset() * 60000)).toISOString().split('T')[0]
+  const inicioMes = new Date(agora.getFullYear(), agora.getMonth(), 1).toISOString().split('T')[0]
 
   // Função helper para buscar dados com fallback para service client
   const buscarDados = async (query: any, serviceFallback: any) => {

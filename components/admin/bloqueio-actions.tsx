@@ -16,7 +16,7 @@ export function BloqueioActions({ bloqueioId }: BloqueioActionsProps) {
   const [loading, setLoading] = useState(false)
 
   const handleDelete = async () => {
-    if (!confirm('Tem certeza que deseja excluir este bloqueio?')) {
+    if (!confirm('Tem certeza que deseja desfazer este bloqueio?')) {
       return
     }
 
@@ -32,8 +32,8 @@ export function BloqueioActions({ bloqueioId }: BloqueioActionsProps) {
 
       router.refresh()
     } catch (error) {
-      console.error('Erro ao excluir bloqueio:', error)
-      alert('Erro ao excluir bloqueio. Tente novamente.')
+      console.error('Erro ao desfazer bloqueio:', error)
+      alert('Erro ao desfazer bloqueio. Tente novamente.')
     } finally {
       setLoading(false)
     }
@@ -59,7 +59,7 @@ export function BloqueioActions({ bloqueioId }: BloqueioActionsProps) {
         ) : (
           <Trash2 className="h-3 w-3 mr-1" />
         )}
-        Excluir
+        Desfazer Bloqueio
       </Button>
     </div>
   )
