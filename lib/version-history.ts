@@ -15,6 +15,21 @@ export interface VersionInfo {
 
 export const VERSION_HISTORY: VersionInfo[] = [
   {
+    version: '2.3.0',
+    name: 'Dashboard Enriquecido',
+    releaseDate: '2025-10-28',
+    type: 'minor',
+    description: 'Dashboard mais completo com widgets operacionais, ranking de serviços e atalhos rápidos',
+    features: [
+      'Painel superior com cartões alinhados em grid responsiva (6 métricas)',
+      'Tabela de próximos agendamentos com status destacados',
+      'Seção de atalhos rápidos para ações frequentes do admin',
+      'Ranking de serviços do mês com ticket médio automático',
+      'Lista de clientes recentes com data e telefone formatados',
+      'Novas consultas Supabase otimizadas para suportar os widgets'
+    ]
+  },
+  {
     version: '2.2.0',
     name: 'Dashboard Avançado e Correções',
     releaseDate: '2025-08-23',
