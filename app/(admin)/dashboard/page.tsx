@@ -66,17 +66,21 @@ export default async function DashboardPage() {
     return total + (agendamento.servicos?.preco || 0)
   }, 0) || 0
 
+  const cardBaseClass =
+    'group relative overflow-hidden border-border/60 bg-card/95 shadow-sm transition duration-300 hover:border-primary/40 hover:shadow-lg'
+
   return (
     <div>
       <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
-        <Card>
+        <Card className={cardBaseClass}>
+          <span className="pointer-events-none absolute -top-10 right-0 h-24 w-24 rounded-full bg-primary/15 blur-2xl transition-opacity duration-300 group-hover:opacity-100" aria-hidden />
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Atendimentos Hoje
             </CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
+            <Calendar className="h-4 w-4 text-primary transition-colors duration-300 group-hover:text-primary-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -88,12 +92,13 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className={cardBaseClass}>
+          <span className="pointer-events-none absolute -top-10 right-0 h-24 w-24 rounded-full bg-primary/15 blur-2xl transition-opacity duration-300 group-hover:opacity-100" aria-hidden />
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Concluídos Hoje
             </CardTitle>
-            <CheckCircle className="h-4 w-4 text-muted-foreground" />
+            <CheckCircle className="h-4 w-4 text-primary transition-colors duration-300 group-hover:text-primary-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -105,12 +110,13 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className={cardBaseClass}>
+          <span className="pointer-events-none absolute -top-10 right-0 h-24 w-24 rounded-full bg-primary/15 blur-2xl transition-opacity duration-300 group-hover:opacity-100" aria-hidden />
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Receita Hoje
             </CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <DollarSign className="h-4 w-4 text-primary transition-colors duration-300 group-hover:text-primary-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -122,12 +128,13 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className={cardBaseClass}>
+          <span className="pointer-events-none absolute -top-10 right-0 h-24 w-24 rounded-full bg-primary/15 blur-2xl transition-opacity duration-300 group-hover:opacity-100" aria-hidden />
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Receita do Mês
             </CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <TrendingUp className="h-4 w-4 text-primary transition-colors duration-300 group-hover:text-primary-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -139,12 +146,13 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className={cardBaseClass}>
+          <span className="pointer-events-none absolute -top-10 right-0 h-24 w-24 rounded-full bg-primary/15 blur-2xl transition-opacity duration-300 group-hover:opacity-100" aria-hidden />
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Próximos Hoje
             </CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
+            <Clock className="h-4 w-4 text-primary transition-colors duration-300 group-hover:text-primary-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -156,12 +164,13 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className={cardBaseClass}>
+          <span className="pointer-events-none absolute -top-10 right-0 h-24 w-24 rounded-full bg-primary/15 blur-2xl transition-opacity duration-300 group-hover:opacity-100" aria-hidden />
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Total Clientes
             </CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <Users className="h-4 w-4 text-primary transition-colors duration-300 group-hover:text-primary-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
