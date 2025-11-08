@@ -7,11 +7,11 @@ import { useSidebar } from './sidebar-provider'
 import {
   LayoutDashboard,
   Calendar,
+  CalendarDays,
   Users,
+  UserCheck,
   Scissors,
   Clock,
-  Ban,
-  FileText,
   Menu,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -20,11 +20,11 @@ import { VersionInfo } from '@/components/version-info'
 const menuItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/agendamentos', label: 'Agendamentos', icon: Calendar },
+  { href: '/calendario', label: 'Calendário', icon: CalendarDays },
   { href: '/clientes', label: 'Clientes', icon: Users },
+  { href: '/colaboradores', label: 'Colaboradores', icon: UserCheck },
   { href: '/servicos', label: 'Serviços', icon: Scissors },
   { href: '/horarios', label: 'Horários', icon: Clock },
-  { href: '/bloqueios', label: 'Bloqueios', icon: Ban },
-  { href: '/relatorios', label: 'Relatórios', icon: FileText },
 ]
 
 export function Sidebar() {

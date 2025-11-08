@@ -4,17 +4,19 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { createClient } from '@/lib/supabase/client'
 import { Tables } from '@/lib/supabase/types'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Trash2 } from 'lucide-react'
 
 type Agendamento = Tables<'agendamentos'>
 type Cliente = Tables<'clientes'>
 type Servico = Tables<'servicos'>
+type Colaborador = Tables<'colaboradores'>
 
 interface AgendamentoFormProps {
   agendamento?: Agendamento
@@ -31,14 +33,17 @@ const statusOptions = [
 export function AgendamentoForm({ agendamento, isEditing = false }: AgendamentoFormProps) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [clientes, setClientes] = useState<Cliente[]>([])
   const [servicos, setServicos] = useState<Servico[]>([])
+  const [colaboradores, setColaboradores] = useState<Colaborador[]>([])
   const [formData, setFormData] = useState({
     data_agendamento: agendamento?.data_agendamento || '',
     hora_inicio: agendamento?.hora_inicio || '',
     hora_fim: agendamento?.hora_fim || '',
     cliente_id: agendamento?.cliente_id || '',
     servico_id: agendamento?.servico_id || '',
+    colaborador_id: agendamento?.colaborador_id || '',
     status: agendamento?.status || 'pendente',
     valor_total: agendamento?.valor_total || 0,
     observacoes: agendamento?.observacoes || '',
@@ -65,6 +70,15 @@ export function AgendamentoForm({ agendamento, isEditing = false }: AgendamentoF
         .order('nome', { ascending: true })
 
       if (servicosData) setServicos(servicosData)
+
+      // Load colaboradores
+      const { data: colaboradoresData } = await supabase
+        .from('colaboradores')
+        .select('*')
+        .eq('ativo', true)
+        .order('nome', { ascending: true })
+
+      if (colaboradoresData) setColaboradores(colaboradoresData)
     }
 
     loadData()
@@ -107,6 +121,7 @@ export function AgendamentoForm({ agendamento, isEditing = false }: AgendamentoF
             hora_fim: formData.hora_fim,
             cliente_id: formData.cliente_id || null,
             servico_id: formData.servico_id || null,
+            colaborador_id: formData.colaborador_id || null,
             status: formData.status,
             valor_total: formData.valor_total || null,
             observacoes: formData.observacoes || null,
@@ -124,6 +139,7 @@ export function AgendamentoForm({ agendamento, isEditing = false }: AgendamentoF
             hora_fim: formData.hora_fim,
             cliente_id: formData.cliente_id || null,
             servico_id: formData.servico_id || null,
+            colaborador_id: formData.colaborador_id || null,
             status: formData.status,
             valor_total: formData.valor_total || null,
             observacoes: formData.observacoes || null,
@@ -143,10 +159,9 @@ export function AgendamentoForm({ agendamento, isEditing = false }: AgendamentoF
   }
 
   const handleDelete = async () => {
-    if (!agendamento || !confirm('Tem certeza que deseja excluir este agendamento?')) {
+    if (!agendamento) {
       return
     }
-
     setLoading(true)
     try {
       const supabase = createClient()
@@ -157,6 +172,7 @@ export function AgendamentoForm({ agendamento, isEditing = false }: AgendamentoF
 
       if (error) throw error
 
+      setShowDeleteConfirm(false)
       router.push('/agendamentos')
       router.refresh()
     } catch (error) {
@@ -211,7 +227,7 @@ export function AgendamentoForm({ agendamento, isEditing = false }: AgendamentoF
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="cliente_id">Cliente</Label>
               <Select
@@ -225,6 +241,25 @@ export function AgendamentoForm({ agendamento, isEditing = false }: AgendamentoF
                   {clientes.map((cliente) => (
                     <SelectItem key={cliente.id} value={cliente.id}>
                       {cliente.nome} - {cliente.telefone}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="colaborador_id">Colaborador *</Label>
+              <Select
+                value={formData.colaborador_id || ''}
+                onValueChange={(value) => setFormData({ ...formData, colaborador_id: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione um colaborador" />
+                </SelectTrigger>
+                <SelectContent>
+                  {colaboradores.map((colaborador) => (
+                    <SelectItem key={colaborador.id} value={colaborador.id}>
+                      {colaborador.nome}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -314,7 +349,7 @@ export function AgendamentoForm({ agendamento, isEditing = false }: AgendamentoF
               <Button
                 type="button"
                 variant="destructive"
-                onClick={handleDelete}
+                onClick={() => setShowDeleteConfirm(true)}
                 disabled={loading}
                 className="ml-auto"
               >
@@ -325,6 +360,23 @@ export function AgendamentoForm({ agendamento, isEditing = false }: AgendamentoF
           </div>
         </CardContent>
       </Card>
+
+      {isEditing && agendamento && (
+        <ConfirmDialog
+          open={showDeleteConfirm}
+          onCancel={() => {
+            if (!loading) {
+              setShowDeleteConfirm(false)
+            }
+          }}
+          onConfirm={handleDelete}
+          loading={loading}
+          icon={<Trash2 className="h-5 w-5 text-destructive" />}
+          title="Excluir agendamento"
+          description="Tem certeza que deseja excluir este agendamento? Esta ação não pode ser desfeita."
+          confirmText="Excluir"
+        />
+      )}
     </form>
   )
 }

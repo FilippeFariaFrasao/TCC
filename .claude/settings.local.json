@@ -3,13 +3,17 @@
     "allow": [
       "mcp__context7__resolve-library-id",
       "mcp__context7__get-library-docs",
-      "Bash(npx:*)"
+      "Bash(npx:*)",
+      "mcp__supabase-barbaros__execute_sql"
     ],
     "deny": [],
     "ask": []
   },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
-    "supabase-barbaros"
+    "supabase-barbaros",
+    "playwright",
+    "github",
+    "context7"
   ]
 }

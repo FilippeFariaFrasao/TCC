@@ -4,13 +4,14 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { createClient } from '@/lib/supabase/client'
 import { Tables } from '@/lib/supabase/types'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Trash2 } from 'lucide-react'
 
 type HorarioFuncionamento = Tables<'horarios_funcionamento'>
 
@@ -32,6 +33,7 @@ const diasSemana = [
 export function HorarioForm({ horario, isEditing = false }: HorarioFormProps) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [formData, setFormData] = useState({
     dia_semana: horario?.dia_semana ?? 1,
     hora_abertura: horario?.hora_abertura || '09:00',
@@ -89,10 +91,9 @@ export function HorarioForm({ horario, isEditing = false }: HorarioFormProps) {
   }
 
   const handleDelete = async () => {
-    if (!horario || !confirm('Tem certeza que deseja excluir este horário?')) {
+    if (!horario) {
       return
     }
-
     setLoading(true)
     try {
       const supabase = createClient()
@@ -103,6 +104,7 @@ export function HorarioForm({ horario, isEditing = false }: HorarioFormProps) {
 
       if (error) throw error
 
+      setShowDeleteConfirm(false)
       router.push('/horarios')
       router.refresh()
     } catch (error) {
@@ -215,7 +217,7 @@ export function HorarioForm({ horario, isEditing = false }: HorarioFormProps) {
               <Button
                 type="button"
                 variant="destructive"
-                onClick={handleDelete}
+                onClick={() => setShowDeleteConfirm(true)}
                 disabled={loading}
                 className="ml-auto"
               >
@@ -226,6 +228,23 @@ export function HorarioForm({ horario, isEditing = false }: HorarioFormProps) {
           </div>
         </CardContent>
       </Card>
+
+      {isEditing && horario && (
+        <ConfirmDialog
+          open={showDeleteConfirm}
+          onCancel={() => {
+            if (!loading) {
+              setShowDeleteConfirm(false)
+            }
+          }}
+          onConfirm={handleDelete}
+          loading={loading}
+          icon={<Trash2 className="h-5 w-5 text-destructive" />}
+          title="Excluir horário"
+          description="Tem certeza que deseja excluir este horário de funcionamento? Esta ação não pode ser desfeita."
+          confirmText="Excluir"
+        />
+      )}
     </form>
   )
 }

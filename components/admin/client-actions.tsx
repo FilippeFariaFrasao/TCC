@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { createClient } from '@/lib/supabase/client'
 import { Pencil, Power, PowerOff, Loader2 } from 'lucide-react'
 import Link from 'next/link'
@@ -15,13 +16,10 @@ interface ClientActionsProps {
 export function ClientActions({ clienteId, isActive }: ClientActionsProps) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
 
   const handleToggleActive = async () => {
     const action = isActive ? 'inativar' : 'reativar'
-    if (!confirm(`Tem certeza que deseja ${action} este cliente?`)) {
-      return
-    }
-
     setLoading(true)
     try {
       const supabase = createClient()
@@ -32,6 +30,7 @@ export function ClientActions({ clienteId, isActive }: ClientActionsProps) {
 
       if (error) throw error
 
+      setShowConfirm(false)
       router.refresh()
     } catch (error) {
       console.error(`Erro ao ${action} cliente:`, error)
@@ -42,29 +41,46 @@ export function ClientActions({ clienteId, isActive }: ClientActionsProps) {
   }
 
   return (
-    <div className="flex gap-2 mt-4">
-      <Link href={`/clientes/${clienteId}/editar`}>
-        <Button variant="outline" size="sm">
-          <Pencil className="h-3 w-3 mr-1" />
-          Editar
+    <>
+      <div className="flex gap-2 mt-4">
+        <Link href={`/clientes/${clienteId}/editar`}>
+          <Button variant="outline" size="sm">
+            <Pencil className="h-3 w-3 mr-1" />
+            Editar
+          </Button>
+        </Link>
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className={isActive ? "text-red-600 hover:text-red-700" : "text-green-600 hover:text-green-700"}
+          onClick={() => setShowConfirm(true)}
+          disabled={loading}
+        >
+          {loading ? (
+            <Loader2 className="h-3 w-3 animate-spin mr-1" />
+          ) : isActive ? (
+            <PowerOff className="h-3 w-3 mr-1" />
+          ) : (
+            <Power className="h-3 w-3 mr-1" />
+          )}
+          {isActive ? 'Inativar' : 'Reativar'}
         </Button>
-      </Link>
-      <Button 
-        variant="outline" 
-        size="sm" 
-        className={isActive ? "text-red-600 hover:text-red-700" : "text-green-600 hover:text-green-700"}
-        onClick={handleToggleActive}
-        disabled={loading}
-      >
-        {loading ? (
-          <Loader2 className="h-3 w-3 animate-spin mr-1" />
-        ) : isActive ? (
-          <PowerOff className="h-3 w-3 mr-1" />
-        ) : (
-          <Power className="h-3 w-3 mr-1" />
-        )}
-        {isActive ? 'Inativar' : 'Reativar'}
-      </Button>
-    </div>
+      </div>
+
+      <ConfirmDialog
+        open={showConfirm}
+        onCancel={() => {
+          if (!loading) {
+            setShowConfirm(false)
+          }
+        }}
+        onConfirm={handleToggleActive}
+        loading={loading}
+        icon={isActive ? <PowerOff className="h-5 w-5 text-destructive" /> : <Power className="h-5 w-5 text-emerald-500" />}
+        title={`${isActive ? 'Inativar' : 'Reativar'} cliente`}
+        description={`Tem certeza que deseja ${isActive ? 'inativar' : 'reativar'} este cliente?`}
+        confirmText={isActive ? 'Inativar' : 'Reativar'}
+      />
+    </>
   )
 }

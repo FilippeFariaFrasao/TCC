@@ -14,7 +14,7 @@ import {
   CalendarPlus,
   UserPlus,
   Scissors,
-  FileText,
+  UserCog,
 } from 'lucide-react'
 
 export default async function DashboardPage() {
@@ -226,10 +226,10 @@ export default async function DashboardPage() {
       icon: Scissors,
     },
     {
-      title: 'Ver relatórios',
-      description: 'Acompanhe tendências e desempenho geral',
-      href: '/relatorios',
-      icon: FileText,
+      title: 'Gerenciar equipe',
+      description: 'Organize a disponibilidade e dados dos colaboradores',
+      href: '/colaboradores',
+      icon: UserCog,
     },
   ]
 
