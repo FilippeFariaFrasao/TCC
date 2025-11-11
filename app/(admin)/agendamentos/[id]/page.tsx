@@ -1,14 +1,15 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { createClient } from '@/lib/supabase/server'
 import { createServiceClient } from '@/lib/supabase/service'
-import { Calendar, Clock, User, Phone, DollarSign } from 'lucide-react'
+import { Calendar, Clock, User, Phone, DollarSign, Package } from 'lucide-react'
 import { notFound } from 'next/navigation'
 
 interface AgendamentoPageProps {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export default async function AgendamentoPage({ params }: AgendamentoPageProps) {
+  const { id } = await params
   const supabase = await createClient()
   const service = createServiceClient()
 
@@ -19,7 +20,7 @@ export default async function AgendamentoPage({ params }: AgendamentoPageProps) 
       clientes (nome, telefone, email),
       servicos (nome, duracao_minutos, preco, descricao)
     `)
-    .eq('id', params.id)
+    .eq('id', id)
     .single()
 
   if (!agendamento && service) {
@@ -30,7 +31,7 @@ export default async function AgendamentoPage({ params }: AgendamentoPageProps) 
         clientes (nome, telefone, email),
         servicos (nome, duracao_minutos, preco, descricao)
       `)
-      .eq('id', params.id)
+      .eq('id', id)
       .single()
     agendamento = data as any
   }
@@ -38,6 +39,46 @@ export default async function AgendamentoPage({ params }: AgendamentoPageProps) 
   if (!agendamento) {
     notFound()
   }
+
+  // Fetch agendamento produtos
+  let { data: produtos } = await supabase
+    .from('agendamento_produtos')
+    .select(`
+      quantidade,
+      produtos:produto_id (
+        id,
+        nome,
+        preco_venda,
+        unidade_medida
+      )
+    `)
+    .eq('agendamento_id', id)
+
+  if (!produtos && service) {
+    const { data } = await service
+      .from('agendamento_produtos')
+      .select(`
+        quantidade,
+        produtos:produto_id (
+          id,
+          nome,
+          preco_venda,
+          unidade_medida
+        )
+      `)
+      .eq('agendamento_id', id)
+    produtos = data as any
+  }
+
+  const produtosFormatados = produtos?.map((item: any) => ({
+    nome: item.produtos.nome,
+    quantidade: item.quantidade,
+    preco_unitario: item.produtos.preco_venda || 0,
+    subtotal: item.quantidade * (item.produtos.preco_venda || 0),
+    unidade_medida: item.produtos.unidade_medida
+  })) || []
+
+  const totalProdutos = produtosFormatados.reduce((acc: number, p: any) => acc + p.subtotal, 0)
 
   return (
     <div>
@@ -132,6 +173,77 @@ export default async function AgendamentoPage({ params }: AgendamentoPageProps) 
                 </p>
                 {agendamento.servicos.descricao && (
                   <p className="text-sm text-gray-600">{agendamento.servicos.descricao}</p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {produtosFormatados.length > 0 && (
+          <Card className="lg:col-span-2">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Package className="h-5 w-5" />
+                Produtos Vendidos
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left py-2 px-2">Produto</th>
+                        <th className="text-center py-2 px-2">Quantidade</th>
+                        <th className="text-right py-2 px-2">Preço Unit.</th>
+                        <th className="text-right py-2 px-2">Subtotal</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {produtosFormatados.map((produto: any, index: number) => (
+                        <tr key={index} className="border-b">
+                          <td className="py-3 px-2">{produto.nome}</td>
+                          <td className="text-center py-3 px-2">
+                            {produto.quantidade} {produto.unidade_medida}
+                          </td>
+                          <td className="text-right py-3 px-2">
+                            R$ {produto.preco_unitario.toFixed(2)}
+                          </td>
+                          <td className="text-right py-3 px-2 font-medium">
+                            R$ {produto.subtotal.toFixed(2)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                    <tfoot>
+                      <tr className="font-bold">
+                        <td colSpan={3} className="text-right py-3 px-2">
+                          Total dos Produtos:
+                        </td>
+                        <td className="text-right py-3 px-2 text-primary">
+                          R$ {totalProdutos.toFixed(2)}
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+                {agendamento.servicos && (
+                  <div className="pt-2 border-t">
+                    <div className="flex justify-between text-sm text-gray-600 mb-1">
+                      <span>Serviço:</span>
+                      <span>R$ {agendamento.servicos.preco.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between text-sm text-gray-600 mb-1">
+                      <span>Produtos:</span>
+                      <span>R$ {totalProdutos.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between font-bold text-lg pt-2 border-t">
+                      <span>Total Geral:</span>
+                      <span className="text-primary">
+                        R$ {(agendamento.servicos.preco + totalProdutos).toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
                 )}
               </div>
             </CardContent>

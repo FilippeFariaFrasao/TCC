@@ -4,11 +4,11 @@ import { createServiceClient } from '@/lib/supabase/service'
 import { notFound } from 'next/navigation'
 
 interface EditarAgendamentoPageProps {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export default async function EditarAgendamentoPage({ params }: EditarAgendamentoPageProps) {
-  const { id } = params
+  const { id } = await params
   const supabase = await createClient()
   const service = createServiceClient()
 

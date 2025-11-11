@@ -15,6 +15,8 @@ import {
   UserPlus,
   Scissors,
   UserCog,
+  Package,
+  AlertTriangle,
 } from 'lucide-react'
 
 export default async function DashboardPage() {
@@ -137,6 +139,18 @@ export default async function DashboardPage() {
       .select('id, nome, telefone, created_at')
       .order('created_at', { ascending: false })
       .limit(5)
+  )
+
+  // Produtos ativos
+  let { count: totalProdutosAtivos } = await buscarDados(
+    supabase.from('produtos').select('*', { count: 'exact', head: true }).eq('ativo', true),
+    service?.from('produtos').select('*', { count: 'exact', head: true }).eq('ativo', true)
+  )
+
+  // Produtos com estoque baixo
+  let { count: produtosEstoqueBaixo } = await buscarDados(
+    supabase.from('view_estoque_atual').select('*', { count: 'exact', head: true }).eq('estoque_baixo', true).eq('ativo', true),
+    service?.from('view_estoque_atual').select('*', { count: 'exact', head: true }).eq('estoque_baixo', true).eq('ativo', true)
   )
 
   // Calcular valores
@@ -350,6 +364,42 @@ export default async function DashboardPage() {
             </div>
             <p className="text-xs text-muted-foreground">
               Cadastrados
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className={`${cardBaseClass} xl:col-span-2`}>
+          <span className="pointer-events-none absolute -top-10 right-0 h-24 w-24 rounded-full bg-primary/15 blur-2xl transition-opacity duration-300 group-hover:opacity-100" aria-hidden />
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Produtos Ativos
+            </CardTitle>
+            <Package className="h-4 w-4 text-primary transition-colors duration-300 group-hover:text-primary-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {totalProdutosAtivos ?? 0}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Em catálogo
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className={`${cardBaseClass} xl:col-span-2`}>
+          <span className="pointer-events-none absolute -top-10 right-0 h-24 w-24 rounded-full bg-primary/15 blur-2xl transition-opacity duration-300 group-hover:opacity-100" aria-hidden />
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Alertas de Estoque
+            </CardTitle>
+            <AlertTriangle className="h-4 w-4 text-yellow-600 transition-colors duration-300" />
+          </CardHeader>
+          <CardContent>
+            <div className={`text-2xl font-bold ${(produtosEstoqueBaixo ?? 0) > 0 ? 'text-yellow-600' : 'text-green-600'}`}>
+              {produtosEstoqueBaixo ?? 0}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Abaixo do mínimo
             </p>
           </CardContent>
         </Card>

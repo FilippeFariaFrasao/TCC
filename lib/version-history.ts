@@ -15,6 +15,44 @@ export interface VersionInfo {
 
 export const VERSION_HISTORY: VersionInfo[] = [
   {
+    version: '2.5.0',
+    name: 'Integração de Produtos com Agendamentos',
+    releaseDate: '2025-11-11',
+    type: 'minor',
+    description: 'Sistema de venda de produtos integrado aos agendamentos com baixa automática de estoque',
+    features: [
+      'Seleção de produtos durante criação/edição de agendamentos',
+      'Validação de estoque em tempo real ao adicionar produtos',
+      'Cálculo automático do valor total (serviço + produtos)',
+      'Baixa automática no estoque quando agendamento é concluído',
+      'Histórico de produtos vendidos por agendamento',
+      'Visualização detalhada de produtos na página do agendamento',
+      'Tabela completa com quantidade, preço unitário e subtotal',
+      'Resumo financeiro separando serviço e produtos',
+      'Rastreabilidade completa: produtos vinculados aos agendamentos',
+      'Movimentações de estoque automáticas tipo "Venda"'
+    ]
+  },
+  {
+    version: '2.4.0',
+    name: 'Sistema de Produtos e Estoque',
+    releaseDate: '2025-11-11',
+    type: 'minor',
+    description: 'Sistema completo de gerenciamento de produtos e controle de estoque com entradas, saídas e alertas automáticos',
+    features: [
+      'Cadastro completo de produtos (nome, código de barras, marca, categoria, preços)',
+      'Controle de estoque com entrada e saída de mercadorias',
+      'Cálculo automático do saldo atual por produto',
+      'Alertas automáticos de estoque baixo (produtos abaixo do mínimo)',
+      'Dashboard de estoque com indicadores (total produtos, alertas, valor total)',
+      'Histórico completo de movimentações com filtros',
+      'Validação de saída (impede saída maior que saldo disponível)',
+      'View otimizada para consulta rápida do saldo atual',
+      'Integração no dashboard principal (cards de produtos e alertas)',
+      'Novos itens na sidebar: Produtos e Estoque'
+    ]
+  },
+  {
     version: '2.3.0',
     name: 'Dashboard Enriquecido',
     releaseDate: '2025-10-28',

@@ -13,6 +13,8 @@ import {
   Scissors,
   Clock,
   Menu,
+  Package,
+  Archive,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { VersionInfo } from '@/components/version-info'
@@ -25,6 +27,8 @@ const menuItems = [
   { href: '/colaboradores', label: 'Colaboradores', icon: UserCheck },
   { href: '/servicos', label: 'Serviços', icon: Scissors },
   { href: '/horarios', label: 'Horários', icon: Clock },
+  { href: '/produtos', label: 'Produtos', icon: Package },
+  { href: '/estoque', label: 'Estoque', icon: Archive },
 ]
 
 export function Sidebar() {

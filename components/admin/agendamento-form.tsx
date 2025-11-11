@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { createClient } from '@/lib/supabase/client'
 import { Tables } from '@/lib/supabase/types'
 import { Loader2, Trash2 } from 'lucide-react'
+import { AgendamentoProdutosSelector, ProdutoAgendamento } from './agendamento-produtos-selector'
 
 type Agendamento = Tables<'agendamentos'>
 type Cliente = Tables<'clientes'>
@@ -48,6 +49,7 @@ export function AgendamentoForm({ agendamento, isEditing = false }: AgendamentoF
     valor_total: agendamento?.valor_total || 0,
     observacoes: agendamento?.observacoes || '',
   })
+  const [produtosSelecionados, setProdutosSelecionados] = useState<ProdutoAgendamento[]>([])
 
   useEffect(() => {
     const loadData = async () => {
@@ -79,10 +81,39 @@ export function AgendamentoForm({ agendamento, isEditing = false }: AgendamentoF
         .order('nome', { ascending: true })
 
       if (colaboradoresData) setColaboradores(colaboradoresData)
+
+      // Load existing products if editing
+      if (isEditing && agendamento) {
+        const { data: produtosData } = await supabase
+          .from('agendamento_produtos')
+          .select(`
+            quantidade,
+            produtos:produto_id (
+              id,
+              nome,
+              preco_venda,
+              unidade_medida
+            )
+          `)
+          .eq('agendamento_id', agendamento.id)
+
+        if (produtosData && produtosData.length > 0) {
+          const produtosFormatados: ProdutoAgendamento[] = produtosData.map((item: any) => ({
+            produto_id: item.produtos.id,
+            produto_nome: item.produtos.nome,
+            quantidade: item.quantidade,
+            preco_unitario: item.produtos.preco_venda || 0,
+            subtotal: item.quantidade * (item.produtos.preco_venda || 0),
+            saldo_disponivel: 0, // Will be loaded by the selector component
+            unidade_medida: item.produtos.unidade_medida
+          }))
+          setProdutosSelecionados(produtosFormatados)
+        }
+      }
     }
 
     loadData()
-  }, [])
+  }, [isEditing, agendamento])
 
   // Auto-calculate end time and price based on service
   useEffect(() => {
@@ -92,18 +123,30 @@ export function AgendamentoForm({ agendamento, isEditing = false }: AgendamentoF
         const [hours, minutes] = formData.hora_inicio.split(':').map(Number)
         const startDate = new Date()
         startDate.setHours(hours, minutes, 0, 0)
-        
+
         const endDate = new Date(startDate.getTime() + servico.duracao_minutos * 60000)
         const endTime = endDate.toTimeString().slice(0, 5)
+
+        // Calculate total including products
+        const produtosTotal = produtosSelecionados.reduce((acc, p) => acc + p.subtotal, 0)
+        const valorTotal = servico.preco + produtosTotal
 
         setFormData(prev => ({
           ...prev,
           hora_fim: endTime,
-          valor_total: servico.preco
+          valor_total: valorTotal
         }))
       }
     }
-  }, [formData.servico_id, formData.hora_inicio, servicos])
+  }, [formData.servico_id, formData.hora_inicio, servicos, produtosSelecionados])
+
+  // Recalculate total when products change
+  useEffect(() => {
+    const servico = servicos.find(s => s.id === formData.servico_id)
+    const servicoPreco = servico?.preco || 0
+    const produtosTotal = produtosSelecionados.reduce((acc, p) => acc + p.subtotal, 0)
+    setFormData(prev => ({ ...prev, valor_total: servicoPreco + produtosTotal }))
+  }, [produtosSelecionados, formData.servico_id, servicos])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -111,8 +154,10 @@ export function AgendamentoForm({ agendamento, isEditing = false }: AgendamentoF
 
     try {
       const supabase = createClient()
+      let agendamentoId: string
 
       if (isEditing && agendamento) {
+        // Update existing agendamento
         const { error } = await supabase
           .from('agendamentos')
           .update({
@@ -130,8 +175,18 @@ export function AgendamentoForm({ agendamento, isEditing = false }: AgendamentoF
           .eq('id', agendamento.id)
 
         if (error) throw error
+        agendamentoId = agendamento.id
+
+        // Delete old products
+        const { error: deleteError } = await supabase
+          .from('agendamento_produtos')
+          .delete()
+          .eq('agendamento_id', agendamentoId)
+
+        if (deleteError) throw deleteError
       } else {
-        const { error } = await supabase
+        // Create new agendamento
+        const { data: newAgendamento, error } = await supabase
           .from('agendamentos')
           .insert({
             data_agendamento: formData.data_agendamento,
@@ -144,8 +199,54 @@ export function AgendamentoForm({ agendamento, isEditing = false }: AgendamentoF
             valor_total: formData.valor_total || null,
             observacoes: formData.observacoes || null,
           })
+          .select()
+          .single()
 
         if (error) throw error
+        if (!newAgendamento) throw new Error('Erro ao criar agendamento')
+        agendamentoId = newAgendamento.id
+      }
+
+      // Insert new products if any
+      if (produtosSelecionados.length > 0) {
+        const produtosToInsert = produtosSelecionados.map(p => ({
+          agendamento_id: agendamentoId,
+          produto_id: p.produto_id,
+          quantidade: p.quantidade
+        }))
+
+        const { error: produtosError } = await supabase
+          .from('agendamento_produtos')
+          .insert(produtosToInsert)
+
+        if (produtosError) throw produtosError
+
+        // Create stock movements if status is 'concluido'
+        if (formData.status === 'concluido') {
+          const movimentacoes = produtosSelecionados.map(p => ({
+            produto_id: p.produto_id,
+            tipo: 'saida' as const,
+            quantidade: p.quantidade,
+            motivo: 'Venda',
+            observacoes: `Venda no agendamento`,
+            agendamento_id: agendamentoId
+          }))
+
+          const { error: movimentacoesError } = await supabase
+            .from('movimentacoes_estoque')
+            .insert(movimentacoes)
+
+          if (movimentacoesError) throw movimentacoesError
+        }
+      }
+
+      // Success message
+      if (produtosSelecionados.length > 0) {
+        if (formData.status === 'concluido') {
+          alert(`✅ Agendamento salvo com sucesso!\n\n📦 ${produtosSelecionados.length} produto(s) adicionado(s)\n📊 Estoque atualizado automaticamente`)
+        } else {
+          alert(`✅ Agendamento salvo com sucesso!\n\n📦 ${produtosSelecionados.length} produto(s) adicionado(s)\n⚠️ Estoque será baixado quando marcar como "Finalizado"`)
+        }
       }
 
       router.push('/agendamentos')
@@ -327,6 +428,15 @@ export function AgendamentoForm({ agendamento, isEditing = false }: AgendamentoF
               onChange={(e) => setFormData({ ...formData, observacoes: e.target.value })}
               placeholder="Observações sobre o agendamento..."
               rows={3}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Produtos (Opcional)</Label>
+            <AgendamentoProdutosSelector
+              produtosSelecionados={produtosSelecionados}
+              onChange={setProdutosSelecionados}
+              disabled={loading}
             />
           </div>
 
